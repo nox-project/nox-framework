@@ -1,0 +1,29 @@
+{
+    "name": "whoxy_whois",
+    "category": "whois",
+    "endpoint": "https://api.whoxy.com/?key={WHOXY_API_KEY}&whois={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "registrar": "$.registrar_name"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{WHOXY_API_KEY}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.whoxy.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

@@ -1,0 +1,28 @@
+{
+    "name": "cve_search",
+    "category": "vulns",
+    "endpoint": "https://cve.circl.lu/api/cve/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "summary": "$.summary"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "cve",
+    "output_type": [
+        "cve"
+    ],
+    "normalization_map": {
+        "summary": "vuln_description"
+    },
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://cve.circl.lu",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

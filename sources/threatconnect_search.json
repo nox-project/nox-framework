@@ -1,0 +1,32 @@
+{
+    "name": "threatconnect_search",
+    "category": "threat_intel",
+    "endpoint": "https://api.threatconnect.com/v2/indicators/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "data": "$.data"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "TC {TC_API_KEY}:{TC_SIGNATURE}"
+    },
+    "api_key_slots": [
+        "{TC_API_KEY}"
+    ],
+    "input_type": "any",
+    "output_type": [
+        "ip",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://api.threatconnect.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

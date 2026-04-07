@@ -1,0 +1,28 @@
+{
+    "name": "hackertarget_hostsearch",
+    "category": "dns_recon",
+    "endpoint": "https://api.hackertarget.com/hostsearch/?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "hosts": "text_lines"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "domain",
+    "output_type": [
+        "ip",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.hackertarget.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

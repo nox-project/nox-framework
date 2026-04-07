@@ -1,0 +1,27 @@
+{
+    "name": "robtex_ip",
+    "category": "network",
+    "endpoint": "https://freeapi.robtex.com/ipquery/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "as": "$.asname"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://freeapi.robtex.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

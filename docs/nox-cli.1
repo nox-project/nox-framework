@@ -1,0 +1,109 @@
+.TH NOX\-CLI 1 "2026-03-30" "1.0.0" "NOX Framework"
+.SH NAME
+nox-cli \- Advanced Asynchronous Cyber Threat Intelligence Framework
+.SH SYNOPSIS
+.B nox-cli
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B nox-cli
+is an open-source OSINT and breach intelligence framework supporting 120+
+JSON-plugin data sources. It performs asynchronous multi-source lookups
+against email addresses, domains, IP addresses, usernames, phone numbers,
+and hashes. Results can be exported in JSON, CSV, HTML, Markdown, or PDF.
+.PP
+On first run, the application creates \fI~/.nox/\fR with a default
+\fIconfig.ini\fR and seeds the sources directory from the package data.
+.SH OPTIONS
+.TP
+.BR \-t ", " \-\-target " " \fITARGET\fR
+Target to scan (email, domain, IP, username, phone, or hash).
+.TP
+.BR \-i ", " \-\-interactive
+Launch the interactive REPL shell.
+.TP
+.BR \-\-version
+Print version number and exit.
+.TP
+.BR \-\-autoscan
+Full pipeline: breach scan + recursive identity pivot + dorking + paste/Telegram scraping.
+Equivalent to running all phases in sequence on the target and every discovered asset.
+.TP
+.BR \-\-fullscan
+Full scan including pivot enrichment, dorking, and scraping (alias for \-\-autoscan).
+.TP
+.BR \-\-no\-pivot
+Disable recursive pivot enrichment during a full scan.
+.TP
+.BR \-\-dork " " \fITARGET\fR
+Run Google dorking against the specified target.
+.TP
+.BR \-\-scrape " " \fITARGET\fR
+Run web scraping and Telegram indexing against the specified target.
+.TP
+.BR \-\-crack " " \fIHASH\fR
+Attempt to crack the given hash using online rainbow-table APIs and local wordlists.
+.B WARNING:
+submitting hashes to online APIs leaks them to third-party services.
+Use \fB\-\-no\-online\-crack\fR to restrict cracking to local wordlists only.
+.TP
+.BR \-\-no\-online\-crack
+Disable all online rainbow-table API queries during hash cracking.
+Only local wordlist-based cracking is performed. No hash data is sent to
+external services. Recommended for sensitive engagements.
+.TP
+.BR \-\-analyze " " \fIPASSWORD\fR
+Analyze a password for strength and breach exposure.
+.TP
+.BR \-\-apikeys
+Show the API key configuration dashboard. Displays configured and unconfigured
+keys for all supported services.
+.TP
+.BR \-\-allow\-leak
+Bypass the fail-safe OPSEC kill-switch and allow direct connections even when
+a proxy or Tor circuit is unavailable. Use only in controlled environments.
+.TP
+.BR \-\-tor
+Route all requests through the local Tor SOCKS proxy (port 9050).
+.TP
+.BR \-\-proxy " " \fIURL\fR
+Use the specified proxy URL for all requests.
+.TP
+.BR \-\-threads " " \fIN\fR
+Maximum concurrency level (default: 20).
+.TP
+.BR \-\-timeout " " \fISECONDS\fR
+Per-request timeout in seconds (default: 15).
+.TP
+.BR \-o ", " \-\-output " " \fIFILE\fR
+Write results to the specified output file.
+.TP
+.BR \-\-format " " \fI{json,csv,html,md,pdf}\fR
+Output format (default: json).
+.TP
+.BR \-\-diff
+Compare the current scan results against the last cached scan for the same
+target and display only new findings. Records already present in the local
+SQLite cache are suppressed. Useful for recurring exposure monitoring.
+.SH FILES
+.TP
+.I ~/.nox/config.ini
+Per-user configuration file. Created automatically on first run.
+Contains \fB[settings]\fR (concurrency, timeout, stealth, rate limits)
+and \fB[api_keys]\fR sections.
+.TP
+.I /etc/nox/config.ini
+System-wide configuration file. Used as fallback when the per-user file
+does not exist.
+.TP
+.I ~/.nox/sources/
+Directory containing JSON source definition files.
+.TP
+.I ~/.nox/reports/
+Default output directory for generated reports.
+.TP
+.I ~/.nox/logs/nox.log
+Application log file.
+.SH BUGS
+Report bugs at https://github.com/nox-project/nox-framework/issues
+.SH AUTHOR
+nox-project

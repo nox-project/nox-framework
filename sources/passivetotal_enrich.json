@@ -1,0 +1,30 @@
+{
+    "name": "passivetotal_enrich",
+    "category": "enrichment",
+    "endpoint": "https://api.passivetotal.org/v2/enrichment?query={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "tags": "$.tags"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Basic {PASSIVETOTAL_AUTH_BASE64}"
+    },
+    "api_key_slots": [
+        "{PASSIVETOTAL_AUTH_BASE64}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.passivetotal.org",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

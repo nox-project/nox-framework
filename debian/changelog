@@ -1,0 +1,5 @@
+nox-cli (1.0.0-1) kali-dev; urgency=low
+
+  * Initial release to Kali Linux.
+
+ -- nox-project <nox-project@users.noreply.github.com>  Thu, 02 Apr 2026 20:00:00 +0200

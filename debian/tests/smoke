@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+nox-cli --help > /dev/null
+nox-cli --version > /dev/null
+echo "smoke: OK"

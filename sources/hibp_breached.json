@@ -1,0 +1,35 @@
+{
+    "name": "hibp_breached",
+    "category": "breaches",
+    "endpoint": "https://haveibeenpwned.com/api/v3/breachedaccount/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "breaches": "$.*.Name"
+    },
+    "rate_limit": 1.5,
+    "headers": {
+        "hibp-api-key": "{HIBP_API_KEY}",
+        "User-Agent": "NOX-Framework"
+    },
+    "api_key_slots": [
+        "{HIBP_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {
+        "Name": "breach_name"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://haveibeenpwned.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

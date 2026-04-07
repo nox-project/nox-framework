@@ -1,0 +1,26 @@
+{
+    "name": "pypi_user",
+    "category": "social",
+    "endpoint": "https://pypi.org/pypi/{target}/json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "info": "$.info"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://pypi.org",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

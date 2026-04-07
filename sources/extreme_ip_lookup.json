@@ -1,0 +1,28 @@
+{
+    "name": "extreme_ip_lookup",
+    "category": "geolocation",
+    "endpoint": "https://extreme-ip-lookup.com/json/{target}?key={EXTREME_API_KEY}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "org": "$.org"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{EXTREME_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://extreme-ip-lookup.com",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

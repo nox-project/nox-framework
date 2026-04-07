@@ -1,0 +1,38 @@
+{
+    "name": "misp_search",
+    "category": "threat_intel",
+    "endpoint": "{MISP_URL}/attributes/restSearch",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "attributes": "$.Attribute[*].value"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "{MISP_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    "payload_template": {
+        "returnFormat": "json",
+        "value": "{target}"
+    },
+    "api_key_slots": [
+        "{MISP_API_KEY}"
+    ],
+    "input_type": "any",
+    "output_type": [
+        "ip",
+        "domain",
+        "hash"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "{MISP_URL}",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

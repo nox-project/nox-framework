@@ -1,0 +1,30 @@
+{
+    "name": "pipl_search",
+    "category": "enrichment",
+    "endpoint": "https://api.pipl.com/search/?email={target}&key={PIPL_API_KEY}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "person": "$.person"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{PIPL_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "username",
+        "domain",
+        "phone"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.pipl.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

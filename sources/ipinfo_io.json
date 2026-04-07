@@ -1,0 +1,31 @@
+{
+    "name": "ipinfo_io",
+    "category": "geolocation",
+    "endpoint": "https://ipinfo.io/{target}/json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "org": "$.org",
+        "city": "$.city"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {
+        "org": "asn_org",
+        "city": "geo_city"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://ipinfo.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

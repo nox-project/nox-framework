@@ -1,0 +1,26 @@
+{
+    "name": "wayback_machine",
+    "category": "archive",
+    "endpoint": "https://archive.org/wayback/available?url={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "snapshot": "$.archived_snapshots.closest.url"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "url",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://archive.org",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

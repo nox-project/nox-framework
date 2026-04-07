@@ -1,0 +1,33 @@
+{
+    "name": "passivetotal_whois",
+    "category": "whois",
+    "endpoint": "https://api.passivetotal.org/v2/whois?query={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "registrar": "$.registrar"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Basic {PASSIVETOTAL_AUTH_BASE64}"
+    },
+    "api_key_slots": [
+        "{PASSIVETOTAL_AUTH_BASE64}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {
+        "registrar": "registrar_name"
+    },
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.passivetotal.org",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

@@ -1,0 +1,31 @@
+{
+    "name": "metadefender_ip",
+    "category": "threat_intel",
+    "endpoint": "https://api.metadefender.com/v4/ip/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "lookup": "$.lookup_results"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "apikey": "{METADEFENDER_API_KEY}"
+    },
+    "api_key_slots": [
+        "{METADEFENDER_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://api.metadefender.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

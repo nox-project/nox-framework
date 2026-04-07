@@ -1,0 +1,52 @@
+{
+    "name": "google_safebrowsing",
+    "category": "threat_intel",
+    "endpoint": "https://safebrowsing.googleapis.com/v4/threatMatches:find?key={GOOGLE_API_KEY}",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "matches": "$.matches"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "payload_template": {
+        "client": {
+            "clientId": "nox",
+            "clientVersion": "1.0"
+        },
+        "threatInfo": {
+            "threatTypes": [
+                "MALWARE",
+                "SOCIAL_ENGINEERING"
+            ],
+            "platformTypes": [
+                "ANY_PLATFORM"
+            ],
+            "threatEntryTypes": [
+                "URL"
+            ],
+            "threatEntries": [
+                {
+                    "url": "{target}"
+                }
+            ]
+        }
+    },
+    "api_key_slots": [
+        "{GOOGLE_API_KEY}"
+    ],
+    "input_type": "url",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://safebrowsing.googleapis.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

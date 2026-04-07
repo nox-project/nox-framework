@@ -1,0 +1,31 @@
+{
+    "name": "github_users",
+    "category": "social",
+    "endpoint": "https://api.github.com/users/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "bio": "$.bio",
+        "blog": "$.blog"
+    },
+    "rate_limit": 2.0,
+    "headers": {
+        "User-Agent": "NOX"
+    },
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.github.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

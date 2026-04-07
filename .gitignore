@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# NOX runtime artifacts — never commit
+nox_cache.db
+*.log
+proxies.txt
+*.deb
+reports/
+
+# Credentials — never commit
+apikeys.json
+credentials.ini
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env files
+.env
+.env.*
+
+# Internal development notes — not for distribution
+IMPROVEMENTS.md

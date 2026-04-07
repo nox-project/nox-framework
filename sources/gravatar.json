@@ -1,0 +1,26 @@
+{
+    "name": "gravatar",
+    "category": "social",
+    "endpoint": "https://www.gravatar.com/{target}.json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "name": "$.entry[0].displayName"
+    },
+    "rate_limit": 2.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "email",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://www.gravatar.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

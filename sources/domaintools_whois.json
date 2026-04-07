@@ -1,0 +1,31 @@
+{
+    "name": "domaintools_whois",
+    "category": "whois",
+    "endpoint": "https://api.domaintools.com/v1/{target}/whois/",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "whois": "$.response.whois.record"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Basic {DT_AUTH_BASE64}"
+    },
+    "api_key_slots": [
+        "{DT_AUTH_BASE64}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.domaintools.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

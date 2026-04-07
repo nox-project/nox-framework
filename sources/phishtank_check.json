@@ -1,0 +1,31 @@
+{
+    "name": "phishtank_check",
+    "category": "threat_intel",
+    "endpoint": "https://checkurl.phishtank.com/checkurl/",
+    "method": "POST",
+    "requires_auth": false,
+    "selectors": {
+        "in_database": "$.results.in_database"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "payload_template": {
+        "url": "{target}",
+        "format": "json"
+    },
+    "api_key_slots": [],
+    "input_type": "url",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://checkurl.phishtank.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

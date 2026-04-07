@@ -1,0 +1,26 @@
+{
+    "name": "npm_user",
+    "category": "social",
+    "endpoint": "https://registry.npmjs.org/-/v1/search?text=maintainer:{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "packages": "$.objects[*].package.name"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://registry.npmjs.org",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

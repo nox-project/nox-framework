@@ -1,0 +1,28 @@
+{
+    "name": "viewdns_reverse_ip",
+    "category": "dns_recon",
+    "endpoint": "https://api.viewdns.info/reverseip/?host={target}&apikey={VIEWDNS_API_KEY}&output=json",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "domains": "$.response.domains[*].name"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{VIEWDNS_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.viewdns.info",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

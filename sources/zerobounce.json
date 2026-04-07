@@ -1,0 +1,31 @@
+{
+    "name": "zerobounce",
+    "category": "email_rep",
+    "endpoint": "https://api.zerobounce.net/v2/validate?api_key={ZEROBOUNCE_API_KEY}&email={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "status": "$.status"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{ZEROBOUNCE_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email"
+    ],
+    "normalization_map": {
+        "status": "email_validity"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.zerobounce.net",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

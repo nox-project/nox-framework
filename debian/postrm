@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+if [ "$1" = "purge" ]; then
+    rm -rf /opt/nox-cli
+    rm -rf /root/.nox /root/.config/nox-cli
+    # Also clean for the invoking user if SUDO_USER is set
+    if [ -n "$SUDO_USER" ]; then
+        UHOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+        rm -rf "${UHOME}/.nox" "${UHOME}/.config/nox-cli"
+    fi
+fi

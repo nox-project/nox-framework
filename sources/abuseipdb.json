@@ -1,0 +1,33 @@
+{
+    "name": "abuseipdb",
+    "category": "threat_intel",
+    "endpoint": "https://api.abuseipdb.com/api/v2/check?ipAddress={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "score": "$.data.abuseConfidenceScore"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Key": "{ABUSEIPDB_API_KEY}"
+    },
+    "api_key_slots": [
+        "{ABUSEIPDB_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {
+        "abuseConfidenceScore": "abuse_score"
+    },
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://api.abuseipdb.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

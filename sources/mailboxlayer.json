@@ -1,0 +1,28 @@
+{
+    "name": "mailboxlayer",
+    "category": "email_rep",
+    "endpoint": "http://apilayer.net/api/check?access_key={MAILBOX_API_KEY}&email={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "score": "$.score"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{MAILBOX_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "http://apilayer.net",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

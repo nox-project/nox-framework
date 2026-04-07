@@ -1,0 +1,31 @@
+{
+    "name": "fofa_info",
+    "category": "scanners",
+    "endpoint": "https://fofa.info/api/v1/search/all?email={FOFA_EMAIL}&key={FOFA_API_KEY}&qbase64={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "results": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{FOFA_API_KEY}",
+        "{FOFA_EMAIL}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "ip",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://fofa.info",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

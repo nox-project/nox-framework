@@ -1,0 +1,30 @@
+{
+    "name": "scamwatcher",
+    "category": "threat_intel",
+    "endpoint": "https://www.scamwatcher.com/scam/search?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "results": "text_lines"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "User-Agent": "Mozilla/5.0"
+    },
+    "api_key_slots": [],
+    "input_type": "any",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://www.scamwatcher.com",
+    "expected_status": 200,
+    "reliability_score": 2,
+    "is_volatile": true,
+    "backup_endpoints": [],
+    "confidence": 0.55
+}

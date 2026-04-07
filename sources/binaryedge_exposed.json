@@ -1,0 +1,33 @@
+{
+    "name": "binaryedge_exposed",
+    "category": "scanners",
+    "endpoint": "https://api.binaryedge.io/v2/query/ip/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "ports": "$.events[*].port"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-Key": "{BINARYEDGE_API_KEY}"
+    },
+    "api_key_slots": [
+        "{BINARYEDGE_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {
+        "port": "open_port"
+    },
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://api.binaryedge.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

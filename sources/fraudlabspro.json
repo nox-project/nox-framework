@@ -1,0 +1,31 @@
+{
+    "name": "fraudlabspro",
+    "category": "threat_intel",
+    "endpoint": "https://api.fraudlabspro.com/v1/ip/check?key={FLP_API_KEY}&ip={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "fraud": "$.fraudlabspro_score"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{FLP_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {
+        "fraudlabspro_score": "fraud_score"
+    },
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://api.fraudlabspro.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

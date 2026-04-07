@@ -1,0 +1,30 @@
+{
+    "name": "vulners_search",
+    "category": "threat_intel",
+    "endpoint": "https://vulners.com/api/v3/search/lucene/?query={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "results": "$.data.search[*]._source.title"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-Vulners-Api-Key": "{VULNERS_API_KEY}"
+    },
+    "api_key_slots": [
+        "{VULNERS_API_KEY}"
+    ],
+    "input_type": "cve",
+    "output_type": [
+        "cve"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://vulners.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

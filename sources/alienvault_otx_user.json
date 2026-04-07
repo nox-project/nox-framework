@@ -1,0 +1,26 @@
+{
+    "name": "alienvault_otx_user",
+    "category": "social",
+    "endpoint": "https://otx.alienvault.com/api/v1/users/{target}/general",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "pulses": "$.pulse_count"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://otx.alienvault.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

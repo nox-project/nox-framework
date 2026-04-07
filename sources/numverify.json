@@ -1,0 +1,32 @@
+{
+    "name": "numverify",
+    "category": "phone",
+    "endpoint": "http://apilayer.net/api/validate?access_key={NUMVERIFY_API_KEY}&number={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "valid": "$.valid",
+        "carrier": "$.carrier"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{NUMVERIFY_API_KEY}"
+    ],
+    "input_type": "phone",
+    "output_type": [
+        "phone"
+    ],
+    "normalization_map": {
+        "valid": "phone_valid",
+        "carrier": "phone_carrier"
+    },
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "http://apilayer.net",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

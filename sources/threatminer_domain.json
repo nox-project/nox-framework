@@ -1,0 +1,28 @@
+{
+    "name": "threatminer_domain",
+    "category": "threat_intel",
+    "endpoint": "https://api.threatminer.org/v2/domain.php?q={target}&rt=1",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "ips": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "domain",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://api.threatminer.org",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "is_volatile": true,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

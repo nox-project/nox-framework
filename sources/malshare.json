@@ -1,0 +1,29 @@
+{
+    "name": "malshare",
+    "category": "threat_intel",
+    "endpoint": "https://malshare.com/api.php?api_key={MALSHARE_API_KEY}&action=search&query={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "hashes": "$.*"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{MALSHARE_API_KEY}"
+    ],
+    "input_type": "hash",
+    "output_type": [
+        "hash"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://malshare.com",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

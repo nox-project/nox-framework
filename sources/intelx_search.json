@@ -1,0 +1,44 @@
+{
+    "name": "intelx_search",
+    "category": "breaches",
+    "endpoint": "https://2.intelx.io/intelligent/search",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "id": "$.id"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "x-key": "{INTELX_API_KEY}"
+    },
+    "payload_template": {
+        "term": "{target}",
+        "buckets": [],
+        "lookuplevel": 0,
+        "maxresults": 100,
+        "timeout": 0,
+        "datefrom": "",
+        "dateto": "",
+        "sort": 4,
+        "media": 0,
+        "terminate": []
+    },
+    "api_key_slots": [
+        "{INTELX_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://2.intelx.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

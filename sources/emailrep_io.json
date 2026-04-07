@@ -1,0 +1,29 @@
+{
+    "name": "emailrep_io",
+    "category": "email_rep",
+    "endpoint": "https://emailrep.io/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "reputation": "$.reputation"
+    },
+    "rate_limit": 2.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "email",
+    "output_type": [
+        "email"
+    ],
+    "normalization_map": {
+        "reputation": "email_reputation"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://emailrep.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

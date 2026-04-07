@@ -1,0 +1,30 @@
+{
+    "name": "spyse_ip",
+    "category": "scanners",
+    "endpoint": "https://api.spyse.com/v1/ip/details/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "geo": "$.data.geo"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Bearer {SPYSE_API_KEY}"
+    },
+    "api_key_slots": [
+        "{SPYSE_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.spyse.com",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

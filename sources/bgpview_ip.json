@@ -1,0 +1,27 @@
+{
+    "name": "bgpview_ip",
+    "category": "network",
+    "endpoint": "https://api.bgpview.io/ip/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "prefixes": "$.data.prefixes[*].prefix"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://api.bgpview.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

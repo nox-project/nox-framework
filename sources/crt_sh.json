@@ -1,0 +1,31 @@
+{
+    "name": "crt_sh",
+    "category": "certificate_transparency",
+    "endpoint": "https://crt.sh/?q={target}&output=json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "domains": "$.*.name_value"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Accept": "application/json"
+    },
+    "api_key_slots": [],
+    "input_type": "domain",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {
+        "name_value": "domain"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://crt.sh",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

@@ -1,0 +1,35 @@
+Source: nox-cli
+Section: net
+Priority: optional
+Maintainer: nox-project <nox-project@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-all, python3-setuptools
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+Homepage: https://github.com/nox-project/nox-framework
+
+Package: nox-cli
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends},
+ python3-requests,
+ python3-aiohttp,
+ python3-pydantic,
+ python3-colorama,
+ python3-rich,
+ python3-bs4,
+ python3-lxml,
+ python3-dnspython,
+ python3-phonenumbers,
+ python3-aiosqlite | python3-pip
+Recommends:
+ python3-stem,
+ tor
+Description: Advanced Asynchronous Cyber Threat Intelligence Framework.
+ nox-cli is an open-source OSINT and breach intelligence framework
+ supporting 120+ JSON-plugin data sources. It performs asynchronous
+ multi-source lookups against email addresses, domains, IP addresses,
+ usernames, phone numbers, and hashes. Features include recursive
+ identity pivoting, risk scoring, HVT detection, dorking, scraping,
+ hash cracking, and forensic PDF reporting.
+ .
+ All Python dependencies are installed inside an isolated virtual
+ environment at /opt/nox-cli/.venv (PEP 668 compliant).

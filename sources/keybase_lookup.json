@@ -1,0 +1,26 @@
+{
+    "name": "keybase_lookup",
+    "category": "social",
+    "endpoint": "https://keybase.io/_/api/1.0/user/lookup.json?username={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "id": "$.them[0].id"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://keybase.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

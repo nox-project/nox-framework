@@ -1,0 +1,27 @@
+{
+    "name": "hackernews_user",
+    "category": "social",
+    "endpoint": "https://hacker-news.firebaseio.com/v0/user/{target}.json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "karma": "$.karma"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://hacker-news.firebaseio.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

@@ -1,0 +1,41 @@
+{
+    "name": "dehashed",
+    "category": "breaches",
+    "endpoint": "https://api.dehashed.com/search?query={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "entries": "$.entries"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Basic {DEHASHED_AUTH_BASE64}",
+        "Accept": "application/json"
+    },
+    "api_key_slots": [
+        "{DEHASHED_AUTH_BASE64}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "username",
+        "ip"
+    ],
+    "normalization_map": {
+        "email": "email_address",
+        "username": "username",
+        "password": "plaintext_password",
+        "hashed_password": "password_hash",
+        "ip_address": "ip_address",
+        "name": "full_name"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://api.dehashed.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

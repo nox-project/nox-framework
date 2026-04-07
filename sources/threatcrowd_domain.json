@@ -1,0 +1,32 @@
+{
+    "name": "threatcrowd_domain",
+    "category": "threat_intel",
+    "endpoint": "https://www.threatcrowd.org/searchApi/v2/domain/report/?domain={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "ips": "$.resolutions[*].ip_address"
+    },
+    "rate_limit": 5.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "domain",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://www.threatcrowd.org",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "is_volatile": true,
+    "bypass_required": [
+        "cloudflare"
+    ],
+    "user_agent_type": "browser",
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

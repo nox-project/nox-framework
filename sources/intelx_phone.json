@@ -1,0 +1,30 @@
+{
+    "name": "intelx_phone",
+    "category": "breaches",
+    "endpoint": "https://2.intelx.io/phone/search?phone={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "results": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "x-key": "{INTELX_API_KEY}"
+    },
+    "api_key_slots": [
+        "{INTELX_API_KEY}"
+    ],
+    "input_type": "phone",
+    "output_type": [
+        "phone"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://2.intelx.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

@@ -1,0 +1,31 @@
+{
+    "name": "ipqualityscore_email",
+    "category": "email_rep",
+    "endpoint": "https://ipqualityscore.com/api/json/email/{IPQS_API_KEY}/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "fraud_score": "$.fraud_score"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{IPQS_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email"
+    ],
+    "normalization_map": {
+        "fraud_score": "email_fraud_score"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://ipqualityscore.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

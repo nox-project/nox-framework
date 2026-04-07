@@ -1,0 +1,34 @@
+{
+    "name": "shodan_host",
+    "category": "scanners",
+    "endpoint": "https://api.shodan.io/shodan/host/{target}?key={SHODAN_API_KEY}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "ports": "$.ports",
+        "vulns": "$.vulns"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{SHODAN_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "domain",
+        "vuln"
+    ],
+    "normalization_map": {
+        "ports": "open_ports",
+        "vulns": "cve_list"
+    },
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://api.shodan.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

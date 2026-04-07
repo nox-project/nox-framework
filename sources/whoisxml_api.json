@@ -1,0 +1,31 @@
+{
+    "name": "whoisxml_api",
+    "category": "whois",
+    "endpoint": "https://www.whoisxmlapi.com/whoisserver/WhoisService?apiKey={WHOISXML_API_KEY}&domainName={target}&outputFormat=JSON",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "created": "$.WhoisRecord.createdDate"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{WHOISXML_API_KEY}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {
+        "createdDate": "registration_date"
+    },
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://www.whoisxmlapi.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

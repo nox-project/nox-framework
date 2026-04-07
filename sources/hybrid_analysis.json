@@ -1,0 +1,37 @@
+{
+    "name": "hybrid_analysis",
+    "category": "threat_intel",
+    "endpoint": "https://www.hybrid-analysis.com/api/v2/search/hash",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "verdict": "$.verdict"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "api-key": "{HYBRID_API_KEY}"
+    },
+    "payload_template": {
+        "hash": "{target}"
+    },
+    "api_key_slots": [
+        "{HYBRID_API_KEY}"
+    ],
+    "input_type": "hash",
+    "output_type": [
+        "hash"
+    ],
+    "normalization_map": {
+        "verdict": "malware_verdict"
+    },
+    "tags": [
+        "passive",
+        "threat",
+        "heavy"
+    ],
+    "health_check_url": "https://www.hybrid-analysis.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

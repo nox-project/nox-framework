@@ -1,0 +1,28 @@
+{
+    "name": "reddit_user",
+    "category": "social",
+    "endpoint": "https://www.reddit.com/user/{target}/about.json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "karma": "$.data.total_karma"
+    },
+    "rate_limit": 2.0,
+    "headers": {
+        "User-Agent": "NOX"
+    },
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://www.reddit.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

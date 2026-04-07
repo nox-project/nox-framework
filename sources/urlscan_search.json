@@ -1,0 +1,28 @@
+{
+    "name": "urlscan_search",
+    "category": "url_analysis",
+    "endpoint": "https://urlscan.io/api/v1/search/?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "urls": "$.results[*].page.url"
+    },
+    "rate_limit": 2.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "domain",
+    "output_type": [
+        "url",
+        "ip",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://urlscan.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

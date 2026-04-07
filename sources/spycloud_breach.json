@@ -1,0 +1,38 @@
+{
+    "name": "spycloud_breach",
+    "category": "breaches",
+    "endpoint": "https://api.spycloud.io/enterprise-v2/breach/data/emails/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "results": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-API-Key": "{SPYCLOUD_API_KEY}"
+    },
+    "api_key_slots": [
+        "{SPYCLOUD_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "username",
+        "ip"
+    ],
+    "normalization_map": {
+        "email": "email_address",
+        "username": "username",
+        "password": "plaintext_password",
+        "ip_addresses": "ip_address"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://api.spycloud.io",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

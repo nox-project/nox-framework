@@ -1,0 +1,33 @@
+{
+    "name": "virustotal_domain",
+    "category": "threat_intel",
+    "endpoint": "https://www.virustotal.com/api/v3/domains/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "malicious": "$.data.attributes.last_analysis_stats.malicious"
+    },
+    "rate_limit": 15.0,
+    "headers": {
+        "x-apikey": "{VIRUSTOTAL_API_KEY}"
+    },
+    "api_key_slots": [
+        "{VIRUSTOTAL_API_KEY}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {
+        "malicious": "malicious_count"
+    },
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://www.virustotal.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

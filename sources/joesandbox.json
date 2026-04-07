@@ -1,0 +1,32 @@
+{
+    "name": "joesandbox",
+    "category": "threat_intel",
+    "endpoint": "https://www.joesandbox.com/api/v2/analysis/search?q={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "id": "$.[*].id"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-JoeSandbox-Api-Key": "{JOE_API_KEY}"
+    },
+    "api_key_slots": [
+        "{JOE_API_KEY}"
+    ],
+    "input_type": "hash",
+    "output_type": [
+        "hash"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat",
+        "heavy"
+    ],
+    "health_check_url": "https://www.joesandbox.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

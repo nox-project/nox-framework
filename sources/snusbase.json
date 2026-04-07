@@ -1,0 +1,46 @@
+{
+    "name": "snusbase",
+    "category": "breaches",
+    "endpoint": "https://api.snusbase.com/data/search",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "leaks": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Auth": "{SNUSBASE_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    "payload_template": {
+        "terms": [
+            "{target}"
+        ],
+        "types": [
+            "email"
+        ]
+    },
+    "api_key_slots": [
+        "{SNUSBASE_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "username"
+    ],
+    "normalization_map": {
+        "email": "email_address",
+        "username": "username",
+        "password": "plaintext_password",
+        "hash": "password_hash"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://api.snusbase.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

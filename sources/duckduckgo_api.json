@@ -1,0 +1,27 @@
+{
+    "name": "duckduckgo_api",
+    "category": "search",
+    "endpoint": "https://api.duckduckgo.com/?q={target}&format=json",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "abstract": "$.Abstract"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "any",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.duckduckgo.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

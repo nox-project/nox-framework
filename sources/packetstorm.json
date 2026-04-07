@@ -1,0 +1,26 @@
+{
+    "name": "packetstorm",
+    "category": "vulns",
+    "endpoint": "https://packetstormsecurity.com/search/?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "results": "text_lines"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "any",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://packetstormsecurity.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

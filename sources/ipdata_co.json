@@ -1,0 +1,31 @@
+{
+    "name": "ipdata_co",
+    "category": "geolocation",
+    "endpoint": "https://api.ipdata.co/{target}?api-key={IPDATA_API_KEY}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "threat": "$.threat"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{IPDATA_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {
+        "threat": "threat_info"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.ipdata.co",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

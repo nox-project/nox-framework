@@ -1,0 +1,31 @@
+{
+    "name": "scylla_sh_search",
+    "category": "breaches",
+    "endpoint": "https://scylla.sh/search?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "results": "$.*"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://scylla.sh",
+    "expected_status": 200,
+    "reliability_score": 2,
+    "is_volatile": true,
+    "backup_endpoints": [
+        "https://scylla.sh/api/search?q={target}"
+    ],
+    "confidence": 0.55
+}

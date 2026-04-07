@@ -1,0 +1,28 @@
+{
+    "name": "alienvault_otx_ip",
+    "category": "threat_intel",
+    "endpoint": "https://otx.alienvault.com/api/v1/indicators/IPv4/{target}/general",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "asn": "$.asn",
+        "country": "$.country_name"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://otx.alienvault.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

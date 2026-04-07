@@ -1,0 +1,29 @@
+{
+    "name": "google_search_custom",
+    "category": "search",
+    "endpoint": "https://www.googleapis.com/customsearch/v1?key={GOOGLE_CX_KEY}&cx={GOOGLE_CX_ID}&q={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "items": "$.items[*].link"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [
+        "{GOOGLE_CX_KEY}",
+        "{GOOGLE_CX_ID}"
+    ],
+    "input_type": "any",
+    "output_type": [
+        "url"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://www.googleapis.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

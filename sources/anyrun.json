@@ -1,0 +1,32 @@
+{
+    "name": "anyrun",
+    "category": "threat_intel",
+    "endpoint": "https://api.any.run/v1/analysis?hash={target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "tasks": "$.tasks"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "API-Key {ANYRUN_API_KEY}"
+    },
+    "api_key_slots": [
+        "{ANYRUN_API_KEY}"
+    ],
+    "input_type": "hash",
+    "output_type": [
+        "hash"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat",
+        "heavy"
+    ],
+    "health_check_url": "https://api.any.run",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

@@ -1,0 +1,27 @@
+{
+    "name": "ipvigilante",
+    "category": "geolocation",
+    "endpoint": "https://ipvigilante.com/json/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "city": "$.data.city_name"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://ipvigilante.com",
+    "expected_status": 200,
+    "reliability_score": 3,
+    "is_volatile": true,
+    "backup_endpoints": [],
+    "confidence": 0.7
+}

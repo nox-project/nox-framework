@@ -1,0 +1,26 @@
+{
+    "name": "gitlab_search",
+    "category": "social",
+    "endpoint": "https://gitlab.com/api/v4/users?username={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "id": "$.[*].id"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "username"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://gitlab.com",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

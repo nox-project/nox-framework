@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nox-cli"
+version = "1.0.0"
+description = "Advanced Asynchronous Cyber Threat Intelligence Framework"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "Apache-2.0" }
+authors = [{ name = "nox-project" }]
+requires-python = ">=3.8"
+dependencies = [
+    "aiohttp>=3.9.0",
+    "aiohttp-socks>=0.8.4",
+    "aiosqlite>=0.20.0",
+    "httpx[http2]>=0.27.0",
+    "requests>=2.31.0",
+    "certifi>=2024.2.2",
+    "cloudscraper>=1.2.71",
+    "beautifulsoup4>=4.12.3",
+    "lxml>=5.1.0",
+    "dnspython>=2.6.0",
+    "phonenumbers>=8.13.0",
+    "pydantic>=2.0.0",
+    "pydantic-core>=2.0.0",
+    "colorama>=0.4.6",
+    "rich>=13.7.0",
+    "stem>=1.8.2",
+    "fpdf2>=2.7.9",
+]
+
+[project.scripts]
+nox-cli = "nox:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"*" = ["sources/*.json"]

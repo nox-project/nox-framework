@@ -1,0 +1,30 @@
+{
+    "name": "hudsonrock_osint",
+    "category": "breach_data",
+    "endpoint": "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-login?username={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "stealers": "$.stealers"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "username",
+    "output_type": [
+        "email",
+        "domain"
+    ],
+    "normalization_map": {
+        "stealers": "breach_record"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://cavalier.hudsonrock.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

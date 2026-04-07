@@ -1,0 +1,29 @@
+{
+    "name": "pulsedive",
+    "category": "threat_intel",
+    "endpoint": "https://pulsedive.com/api/info.php?indicator={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "risk": "$.risk",
+        "threats": "$.threats"
+    },
+    "rate_limit": 2.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "any",
+    "output_type": [
+        "domain",
+        "ip"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://pulsedive.com",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

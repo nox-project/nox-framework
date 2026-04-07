@@ -1,0 +1,28 @@
+{
+    "name": "vigilante_pw",
+    "category": "breaches",
+    "endpoint": "https://vigilante.pw/api/search?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "results": "$.results"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "email",
+    "output_type": [
+        "email"
+    ],
+    "normalization_map": {},
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://vigilante.pw",
+    "expected_status": 200,
+    "reliability_score": 2,
+    "is_volatile": true,
+    "backup_endpoints": [],
+    "confidence": 0.55
+}
