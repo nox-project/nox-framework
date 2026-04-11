@@ -1,7 +1,7 @@
 {
     "name": "scylla_sh_search",
     "category": "breaches",
-    "endpoint": "https://scylla.sh/search?q={target}",
+    "endpoint": "https://scylla.so/search?q={target}",
     "method": "GET",
     "requires_auth": false,
     "selectors": {
@@ -20,12 +20,16 @@
         "passive",
         "stealth"
     ],
-    "health_check_url": "https://scylla.sh",
+    "health_check_url": "https://scylla.so",
     "expected_status": 200,
     "reliability_score": 2,
     "is_volatile": true,
+    "bypass_required": [
+        "cloudflare"
+    ],
+    "user_agent_type": "browser",
     "backup_endpoints": [
-        "https://scylla.sh/api/search?q={target}"
+        "https://scylla.so/api/search?q={target}"
     ],
     "confidence": 0.55
 }

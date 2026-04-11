@@ -67,43 +67,47 @@ async def _query_api(session, url: str, fmt: str) -> Optional[str]:
 
 async def async_crack(session, hash_value: str, hash_type: str) -> Optional[str]:
     """
-    Query multiple rainbow-table APIs concurrently.
-    Returns first plaintext found, or None. bcrypt is skipped.
+    Attempt to recover the plaintext for a given hash.
 
-    C1: create tasks upfront for cancellation, but await each via asyncio.shield
-    inside as_completed — no double wait_for wrapping.
-    C2: for 32-char hex (md5/ntlm ambiguity), also query NTLM-specific APIs.
+    Strategy:
+    1. Local rockyou wordlist (no external calls, no rate limits).
+    2. hashes.com API if HASHES_COM_API_KEY is configured.
 
-    Per-API timeout: 8s. Global budget: 20s (CRACK_TIMEOUT).
-    All tasks are cancelled as soon as the first result is found.
+    bcrypt is skipped — computationally infeasible for online cracking.
     """
     if hash_type == "bcrypt":
         return None
 
     h = hash_value.strip().lower()
-    apis = [
-        (f"https://www.nitrxgen.net/md5db/{h}",                                    "text"),
-        (f"https://hashes.com/en/api/hash?hash={h}",                               "json"),
-        (f"https://hash.help/api/lookup/{h}",                                       "json"),
-        (f"https://hashkiller.io/api/search.php?hash={h}",                         "json"),
-        (f"https://md5decrypt.net/Api/api.php?hash={h}&hash_type={hash_type}&email=&code=", "text"),
-        (f"https://www.cmd5.org/api.ashx?hash={h}",                                "text"),
-    ]
-    # C2: for 32-char hashes (md5/ntlm ambiguous), add NTLM-specific endpoint
-    if hash_type == "md5" and len(h) == 32:
-        apis.append((f"https://hashes.com/en/api/hash?hash={h}&type=ntlm", "json"))
 
-    # C1: create tasks so we can cancel them; shield each before passing to wait_for
-    # so cancellation of the shield future does not cancel the underlying task prematurely.
+    # 1. Local wordlist first — fast, zero external exposure
+    import concurrent.futures as _cf
+    loop = asyncio.get_running_loop()
+    with _cf.ThreadPoolExecutor(max_workers=1) as _ex:
+        local = await loop.run_in_executor(_ex, _local_crack_sync_blocking, hash_value, hash_type)
+    if local:
+        return local
+
+    # 2. hashes.com if API key is configured
+    apis = []
+    try:
+        from sources.helpers.config_handler import ConfigManager  # type: ignore
+        hashes_com_key = ConfigManager.get_key("HASHES_COM_API_KEY")
+        if hashes_com_key:
+            apis.append((f"https://hashes.com/en/api/search?hash={h}&key={hashes_com_key}", "json"))
+    except Exception:
+        pass
+
+    if not apis:
+        return None
+
     tasks = [asyncio.create_task(_query_api(session, url, fmt)) for url, fmt in apis]
     result: Optional[str] = None
     try:
         for fut in asyncio.as_completed(tasks):
             try:
                 res = await asyncio.wait_for(asyncio.shield(fut), timeout=_API_TIMEOUT)
-            except (asyncio.TimeoutError, asyncio.CancelledError):
-                continue
-            except Exception:
+            except (asyncio.TimeoutError, asyncio.CancelledError, Exception):
                 continue
             if res:
                 result = res
@@ -111,9 +115,35 @@ async def async_crack(session, hash_value: str, hash_type: str) -> Optional[str]
     except Exception:
         pass
     finally:
-        # Cancel all remaining tasks and await to suppress pending-task warnings
         for t in tasks:
             if not t.done():
                 t.cancel()
         await asyncio.gather(*[t for t in tasks if not t.done()], return_exceptions=True)
     return result
+
+
+def _local_crack_sync_blocking(hash_value: str, hash_type: str) -> Optional[str]:
+    """Pure-sync version for ThreadPoolExecutor."""
+    import hashlib as _hl
+    from pathlib import Path as _Path
+    wordlist = _Path.home() / ".nox" / "wordlists" / "rockyou.txt"
+    if not wordlist.exists():
+        return None
+    h = hash_value.strip().lower()
+    _hashers = {
+        "md5":    lambda w: _hl.md5(w).hexdigest(),
+        "sha1":   lambda w: _hl.sha1(w).hexdigest(),
+        "sha256": lambda w: _hl.sha256(w).hexdigest(),
+    }
+    hasher = _hashers.get(hash_type)
+    if not hasher:
+        return None
+    try:
+        with wordlist.open("rb") as f:
+            for line in f:
+                word = line.rstrip(b"\n\r")
+                if hasher(word) == h:
+                    return word.decode("utf-8", errors="replace")
+    except Exception:
+        pass
+    return None

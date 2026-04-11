@@ -11,12 +11,13 @@
 
 **Cyber Threat Intelligence Framework**
 
-[![Status](https://img.shields.io/badge/Status-v1.0.0-success)](https://github.com/nox-project/nox-framework/releases/tag/v1.0.0)
+[![Status](https://img.shields.io/badge/Status-v1.0.1-success)](https://github.com/nox-project/nox-framework/releases/tag/v1.0.1)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.txt)
 [![Kali Linux](https://img.shields.io/badge/Kali%20Linux-Ready-557C94?logo=kalilinux&logoColor=white)](https://www.kali.org/)
+[![BlackArch](https://img.shields.io/badge/BlackArch-Available-1E1E2E?logo=archlinux&logoColor=white)](https://blackarch.org/)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-lightgrey)](https://github.com/nox-project/nox-framework)
-[![Sources](https://img.shields.io/badge/Sources-124-red)](https://github.com/nox-project/nox-framework)
+[![Sources](https://img.shields.io/badge/Sources-126-red)](https://github.com/nox-project/nox-framework)
 
 *OSINT framework for red teaming, digital forensics, and corporate exposure analysis.*
 
@@ -30,7 +31,7 @@ NOX is a purpose-built cyber threat intelligence engine designed for operators w
 
 | Capability | Detail |
 |-|-|
-| ⚡ **Async Execution Engine** | Massively parallel scanning across 124 intelligence feeds with no sequential bottlenecks and no blocking I/O. |
+| ⚡ **Async Execution Engine** | Massively parallel scanning across 126 intelligence feeds with no sequential bottlenecks and no blocking I/O. |
 | 🛡️ **Guardian Engine** | Integrated OPSEC layer with automatic proxy rotation and SOCKS5 support. Fail-safe kill-switch halts all traffic if the transport circuit is unavailable. |
 | 🧠 **Risk Scoring** | Dynamic 0–100 scoring with time-decay, source confidence weighting, password complexity analysis, persistence multipliers, and HVT detection. |
 | 🔗 **Recursive Avalanche Engine** | Every discovered asset — username, email, cracked password, phone — is automatically re-injected as a new scan seed. Per-asset pipeline runs sequentially (breach → crack → dork → scrape); child assets run concurrently. Identifiers from all four phases feed the pivot queue. Global deduplication and configurable depth cap prevent runaway recursion. |
@@ -42,9 +43,9 @@ NOX is a purpose-built cyber threat intelligence engine designed for operators w
 
 | Feature | Description |
 |-|-|
-| **124 JSON Plugin Sources** | Every intelligence source is a JSON plugin. The execution engine contains zero hardcoded source logic. |
+| **126 JSON Plugin Sources** | Every intelligence source is a JSON plugin. The execution engine contains zero hardcoded source logic. |
 | **Async Core** | Full `asyncio` event loop with JA3 fingerprinting, SSL session management, per-request jitter, and configurable concurrency. |
-| **Autoscan Pipeline** | `--autoscan` triggers: breach scan → recursive pivot → Google/Bing/DDG dorking → paste/Telegram scraping — all in one command. |
+| **Autoscan Pipeline** | `--autoscan` triggers: breach scan → recursive pivot → Google/Bing/SearXNG dorking → paste/Telegram scraping — all in one command. |
 | **Recursive Avalanche Engine** | Every identifier discovered — from breach records, dork hits, or scraped paste/Telegram content — is re-injected as a new seed. Per-asset pipeline is sequential (breach → crack → dork → scrape); child assets run concurrently via `asyncio.gather`. A global `seen_assets` set prevents infinite loops. Concurrency and depth are fully configurable at runtime via `--threads` and `--depth`. |
 | **Hash Pivoting** | Hashes found in breach data are automatically identified (MD5/SHA1/SHA256/NTLM/bcrypt) and cracked via concurrent background API queries. Cracked plaintexts are injected into the pivot queue as password-recycling seeds. Failures are logged silently — the scan never stops. |
 | **Guardian Proxy Engine** | Zero-config OPSEC layer: reads `proxies.txt` if present; otherwise auto-fetches and validates a high-anonymity proxy pool in-memory. Full SOCKS5/HTTP/S and Tor support. |
@@ -52,7 +53,7 @@ NOX is a purpose-built cyber threat intelligence engine designed for operators w
 | **Identity Graphing** | Union-Find correlation engine unifies breach records into identity clusters across all sources, using type-aware pivot classification. |
 | **Enterprise Forensic Reports** | Professional PDF/HTML/JSON/CSV/Markdown reports with Executive Summary dashboard (Total Time, Nodes Discovered, Cleartext Passwords, Pivot Depth), interactive Pivot Chain Visualization, and strict data sanitization — no technical noise in output. JSON exports are self-describing with a full metadata block. |
 | **HVT Detection** | Auto-flags C-level, Admin, DevOps, and government domain accounts as High-Value Targets. |
-| **Dorking Engine** | Passive document discovery via Google/Bing/DDG dorks with PDF/Office metadata extraction. |
+| **Dorking Engine** | Passive document discovery via Google/Bing/SearXNG dorks with PDF/Office metadata extraction. |
 | **Scraping Engine** | Paste site indexing, Telegram CTI channel monitoring, credential extraction, and misconfiguration discovery. Each autoscan asset gets a dedicated scrape session — no shared state. |
 | **Proxy / Tor** | SOCKS5, HTTP/S proxy, full Tor routing via `stem`, and automatic Guardian fallback. SOCKS5 proxies are validated and routed correctly via `aiohttp-socks`. |
 | **Secure Key Store** | API keys managed via `~/.config/nox-cli/apikeys.json` (chmod 0600). Unconfigured keys are silently skipped. Keys set via environment variable are picked up automatically without restarting. |
@@ -107,14 +108,14 @@ Supported fields: `name`, `endpoint`, `method`, `headers`, `regex_pattern` (or `
 ```
 For each asset (seed + every discovered identifier):
   ├─ Phase 1 — Breach Scan
-  │     124 sources queried in parallel (async)
+  │     126 sources queried in parallel (async)
   │
   ├─ Phase 2 — Hash Crack (non-blocking, concurrent)
   │     Hashes found in breach data → rainbow-table APIs → cracked plaintext
   │     → password-recycling breach scan
   │
   ├─ Phase 3 — Dorking
-  │     Google/Bing/DDG dorks → leaked docs, .env files, SQL dumps
+  │     Google/Bing/SearXNG dorks → leaked docs, .env files, SQL dumps
   │     → new identifiers extracted and re-injected
   │
   └─ Phase 4 — Scraping
@@ -257,7 +258,7 @@ nox-cli --help
 The post-install script automatically:
 1. Creates an isolated virtual environment at `/opt/nox-cli/.venv`
 2. Installs all Python dependencies inside the venv (PEP 668 compliant — zero system pollution)
-3. Builds the 124 source plugins
+3. Builds the 126 source plugins
 4. Links `/usr/bin/nox-cli` → `/opt/nox-cli/nox-wrapper.sh`
 
 ### Option 2: From Source
@@ -373,7 +374,7 @@ usage: nox-cli [-h] [-t TARGET] [-i] [--version]
   --fullscan              Breach + pivot only (no dork/scrape)
   --no-pivot              Disable recursive pivot enrichment
   --depth N               Avalanche pivot depth (default: 2)
-  --dork TARGET           Google/Bing/DDG dorking for leaked documents
+  --dork TARGET           Google/Bing/SearXNG dorking for leaked documents
   --scrape TARGET         Paste site + Telegram scraping
   --crack HASH            Identify and crack a hash
   --no-online-crack       Local wordlist only — no data sent to third-party APIs
@@ -406,7 +407,7 @@ Command        Description
 -----------    ---------------------------------------------------------------
 autoscan       Full pipeline: breach + pivot + dork + scrape
 scan           Breach intelligence scan only
-dork           Google/Bing/DDG dorking for leaked documents
+dork           Google/Bing/SearXNG dorking for leaked documents
 scrape         Paste site + Telegram scraping
 crack          Identify and crack a hash
 analyze        Deep password strength analysis

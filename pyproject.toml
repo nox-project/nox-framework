@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nox-cli"
-version = "1.0.0"
+version = "1.0.1"
 description = "Advanced Asynchronous Cyber Threat Intelligence Framework"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "Apache-2.0" }
@@ -15,6 +15,7 @@ dependencies = [
     "aiohttp-socks>=0.8.4",
     "aiosqlite>=0.20.0",
     "httpx[http2]>=0.27.0",
+    "brotli>=1.1.0",
     "requests>=2.31.0",
     "certifi>=2024.2.2",
     "cloudscraper>=1.2.71",

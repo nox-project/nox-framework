@@ -1,0 +1,38 @@
+{
+    "name": "urlhaus",
+    "category": "threat_intel",
+    "endpoint": "https://urlhaus-api.abuse.ch/v1/host/",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "urls": "$.urls"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Auth-Key": "{URLHAUS_API_KEY}"
+    },
+    "payload_template": {
+        "host": "{target}"
+    },
+    "api_key_slots": [
+        "{URLHAUS_API_KEY}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "url",
+        "domain"
+    ],
+    "normalization_map": {
+        "url": "malware_url",
+        "threat": "threat_type"
+    },
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://urlhaus-api.abuse.ch",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

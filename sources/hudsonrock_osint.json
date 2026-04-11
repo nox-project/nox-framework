@@ -1,7 +1,7 @@
 {
     "name": "hudsonrock_osint",
     "category": "breach_data",
-    "endpoint": "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-login?username={target}",
+    "endpoint": "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-email?email={target}",
     "method": "GET",
     "requires_auth": false,
     "selectors": {
@@ -10,10 +10,11 @@
     "rate_limit": 1.0,
     "headers": {},
     "api_key_slots": [],
-    "input_type": "username",
+    "input_type": "email",
     "output_type": [
         "email",
-        "domain"
+        "domain",
+        "username"
     ],
     "normalization_map": {
         "stealers": "breach_record"

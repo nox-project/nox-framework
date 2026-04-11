@@ -1,11 +1,11 @@
 {
-    "name": "checkleaked",
+    "name": "proxynova_comb",
     "category": "breaches",
-    "endpoint": "https://api.checkleaked.cc/check/{target}",
+    "endpoint": "https://api.proxynova.com/comb?query={target}",
     "method": "GET",
     "requires_auth": false,
     "selectors": {
-        "found": "$.found"
+        "lines": "$.lines"
     },
     "rate_limit": 1.0,
     "headers": {},
@@ -14,17 +14,17 @@
     "output_type": [
         "email"
     ],
-    "normalization_map": {},
+    "normalization_map": {
+        "lines": "credential_line"
+    },
     "tags": [
         "passive",
         "stealth"
     ],
-    "health_check_url": "https://api.checkleaked.cc",
+    "health_check_url": "https://api.proxynova.com",
     "expected_status": 200,
-    "reliability_score": 2,
+    "reliability_score": 3,
     "is_volatile": true,
-    "backup_endpoints": [
-        "https://checkleaked.cc/api/check/{target}"
-    ],
-    "confidence": 0.55
+    "backup_endpoints": [],
+    "confidence": 0.7
 }

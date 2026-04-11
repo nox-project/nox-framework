@@ -6,6 +6,7 @@ aiohttp>=3.9.0
 aiohttp-socks>=0.8.4          # SOCKS4/5 proxy support for aiohttp
 aiosqlite>=0.20.0             # async SQLite (forensic persistence DB)
 httpx[http2]>=0.27.0          # Guardian Engine: dynamic proxy fetch + HTTP/2
+brotli>=1.1.0                 # brotli decompression for aiohttp br responses
 
 # ── Intelligence & Scraping ────────────────────────────────────────────
 requests>=2.31.0

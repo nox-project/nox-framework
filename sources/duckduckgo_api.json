@@ -1,11 +1,11 @@
 {
     "name": "duckduckgo_api",
     "category": "search",
-    "endpoint": "https://api.duckduckgo.com/?q={target}&format=json",
+    "endpoint": "https://searx.tiekoetter.com/search?q={target}&format=json&categories=general",
     "method": "GET",
     "requires_auth": false,
     "selectors": {
-        "abstract": "$.Abstract"
+        "results": "$.results"
     },
     "rate_limit": 1.0,
     "headers": {},
@@ -14,14 +14,18 @@
     "output_type": [
         "url"
     ],
-    "normalization_map": {},
+    "normalization_map": {
+        "url": "url",
+        "title": "title"
+    },
     "tags": [
         "passive",
         "fast"
     ],
-    "health_check_url": "https://api.duckduckgo.com",
+    "health_check_url": "https://searx.tiekoetter.com",
     "expected_status": 200,
-    "reliability_score": 5,
+    "reliability_score": 3,
+    "is_volatile": true,
     "backup_endpoints": [],
-    "confidence": 1.0
+    "confidence": 0.7
 }

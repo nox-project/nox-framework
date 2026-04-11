@@ -1539,19 +1539,37 @@ def _build_ssl_context() -> ssl.SSLContext:
 
 _SSL_CTX = _build_ssl_context()
 
+# SearXNG public instance pool — used by DorkingEngine and ScrapeEngine.
+# Instances are rotated randomly; proxy rotation distributes load across IPs.
+_SEARX_INSTANCES = [
+    "https://searx.tiekoetter.com",
+    "https://search.sapti.me",
+    "https://searx.perennialte.ch",
+    "https://search.mdosch.de",
+    "https://paulgo.io",
+    "https://priv.au",
+]
+
 
 # ── Header randomisation helpers ──────────────────────────────────────
 _UA_POOL = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; rv:133.0) Gecko/20100101 Firefox/133.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:133.0) Gecko/20100101 Firefox/133.0",
-    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0",
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1",
-    "Mozilla/5.0 (Android 15; Mobile; rv:133.0) Gecko/133.0 Firefox/133.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Safari/605.1.15",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; rv:136.0) Gecko/20100101 Firefox/136.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0",
+    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 18_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Mobile/15E148 Safari/604.1",
+    "Mozilla/5.0 (Android 15; Mobile; rv:136.0) Gecko/136.0 Firefox/136.0",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15",
+]
+
+_CH_UA_MAP = [
+    # Order matters: more specific patterns first
+    ("Edg/135",    '"Microsoft Edge";v="135", "Not-A.Brand";v="8", "Chromium";v="135"'),
+    ("Chrome/135", '"Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"'),
+    ("Chrome/134", '"Google Chrome";v="134", "Not-A.Brand";v="8", "Chromium";v="134"'),
 ]
 
 _ACCEPT_LANG_POOL = [
@@ -1568,20 +1586,32 @@ _SEC_FETCH_SITE_POOL = ["none", "same-origin", "cross-site", "same-site"]
 
 
 def _random_headers(extra: Optional[Dict] = None) -> Dict[str, str]:
-    """Return a randomised, browser-grade header set."""
+    """Return a randomised, browser-grade header set with Client Hints for Chromium UAs."""
+    ua = random.choice(_UA_POOL)
     h = {
-        "User-Agent":        random.choice(_UA_POOL),
-        "Accept":            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language":   random.choice(_ACCEPT_LANG_POOL),
-        "Accept-Encoding":   "gzip, deflate, br",
-        "DNT":               "1",
-        "Connection":        "keep-alive",
+        "User-Agent":                ua,
+        "Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language":           random.choice(_ACCEPT_LANG_POOL),
+        "Accept-Encoding":           "gzip, deflate, br",
+        "DNT":                       "1",
+        "Connection":                "keep-alive",
         "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest":    random.choice(_SEC_FETCH_DEST_POOL),
-        "Sec-Fetch-Mode":    random.choice(_SEC_FETCH_MODE_POOL),
-        "Sec-Fetch-Site":    random.choice(_SEC_FETCH_SITE_POOL),
-        "Cache-Control":     "max-age=0",
+        "Sec-Fetch-Dest":            random.choice(_SEC_FETCH_DEST_POOL),
+        "Sec-Fetch-Mode":            random.choice(_SEC_FETCH_MODE_POOL),
+        "Sec-Fetch-Site":            random.choice(_SEC_FETCH_SITE_POOL),
+        "Cache-Control":             "max-age=0",
     }
+    # Add Sec-CH-UA Client Hints for Chromium-based UAs (Firefox omits these)
+    if "Firefox" not in ua:
+        ch_ua = next((v for k, v in _CH_UA_MAP if k in ua), None)
+        if ch_ua:
+            h["Sec-CH-UA"]          = ch_ua
+            h["Sec-CH-UA-Mobile"]   = "?0"
+            h["Sec-CH-UA-Platform"] = (
+                '"Windows"' if "Windows" in ua else
+                '"macOS"'   if "Mac"     in ua else
+                '"Linux"'
+            )
     if extra:
         h.update(extra)
     return h
@@ -1675,7 +1705,7 @@ class AsyncSource(ABC):
                         return resp.status, await resp.text(errors="replace"), body
             except Exception as exc:
                 if attempt < Cfg.RETRIES - 1:
-                    await asyncio.sleep(Cfg.RETRY_DELAY * (attempt + 1))
+                    await asyncio.sleep(Cfg.RETRY_DELAY * (2 ** attempt) + random.uniform(0, 1))
                     continue
                 _syslog.debug("API_FAIL source=%s url=%s error=%s", self.name, url[:80], exc)
         return 0, "", b""
@@ -1694,7 +1724,7 @@ class AsyncSource(ABC):
                             if resp.status == 429:
                                 retry_after = int(resp.headers.get("Retry-After", Cfg.RETRY_DELAY * (attempt + 2)))
                                 _syslog.info("RATE_LIMIT source=%s url=%s retry_after=%ds", self.name, url[:80], retry_after)
-                                await asyncio.sleep(min(retry_after, Cfg.RETRY_DELAY * (attempt + 2)))
+                                await asyncio.sleep(min(retry_after, 30))
                                 continue
                             body = await resp.read()
                             if resp.status >= 400:
@@ -1705,7 +1735,7 @@ class AsyncSource(ABC):
                             if resp.status == 429:
                                 retry_after = int(resp.headers.get("Retry-After", Cfg.RETRY_DELAY * (attempt + 2)))
                                 _syslog.info("RATE_LIMIT source=%s url=%s retry_after=%ds", self.name, url[:80], retry_after)
-                                await asyncio.sleep(min(retry_after, Cfg.RETRY_DELAY * (attempt + 2)))
+                                await asyncio.sleep(min(retry_after, 30))
                                 continue
                             body = await resp.read()
                             if resp.status >= 400:
@@ -1713,7 +1743,7 @@ class AsyncSource(ABC):
                             return resp.status, await resp.text(errors="replace"), body
             except Exception as exc:
                 if attempt < Cfg.RETRIES - 1:
-                    await asyncio.sleep(Cfg.RETRY_DELAY * (attempt + 1))
+                    await asyncio.sleep(Cfg.RETRY_DELAY * (2 ** attempt) + random.uniform(0, 1))
                     continue
                 _syslog.debug("API_FAIL source=%s url=%s error=%s", self.name, url[:80], exc)
         return 0, "", b""
@@ -1887,7 +1917,7 @@ class Session:
                 return r
             except Exception as e:
                 if attempt < Cfg.RETRIES - 1:
-                    time.sleep(Cfg.RETRY_DELAY * (attempt + 1))
+                    time.sleep(Cfg.RETRY_DELAY * (2 ** attempt) + random.uniform(0, 1))
                     continue
                 logger.debug("GET fail %s: %s", url, e)
         return self._null_response(url)
@@ -1919,7 +1949,7 @@ class Session:
                 return self._make_response(raw.status, rd, dict(raw.headers), raw.url)
             except Exception as e:
                 if attempt < Cfg.RETRIES - 1:
-                    time.sleep(Cfg.RETRY_DELAY * (attempt + 1))
+                    time.sleep(Cfg.RETRY_DELAY * (2 ** attempt) + random.uniform(0, 1))
                     continue
                 logger.debug("POST fail %s: %s", url, e)
         return self._null_response(url)
@@ -2251,43 +2281,37 @@ class DorkingEngine(Src):
         return meta
 
     async def _ddg_search(self, query: str, _session=None) -> List[dict]:
-        """DDG search with proxy rotation and circuit-breaker (max 3 retries)."""
+        """DDG HTML is bot-blocked since 2025. Use SearXNG public JSON API."""
         if not aiohttp_mod:
             return []
         try:
             from aiohttp_socks import ProxyConnector as _ProxyConnector
         except ImportError:
             _ProxyConnector = None
-        url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
-        for attempt in range(3):
-            proxy = self._get_next_proxy()
-            ua = random.choice(_UA_POOL)
-            headers = {"User-Agent": ua}
-            try:
-                if proxy and _ProxyConnector:
-                    connector = _ProxyConnector.from_url(proxy)
-                else:
-                    connector = aiohttp_mod.TCPConnector(ssl=_SSL_CTX)
-                # Create session once per attempt; close it before the next retry.
-                async with aiohttp_mod.ClientSession(connector=connector) as sess:
-                    async with sess.get(url, headers=headers,
-                                        timeout=aiohttp_mod.ClientTimeout(total=12)) as resp:
-                        if resp.status in (403, 429):
+        instance = random.choice(_SEARX_INSTANCES)
+        url = f"{instance}/search?q={urllib.parse.quote(query)}&format=json&categories=general"
+        proxy = self._get_next_proxy()
+        try:
+            if proxy and _ProxyConnector:
+                connector = _ProxyConnector.from_url(proxy)
+            else:
+                connector = aiohttp_mod.TCPConnector(ssl=_SSL_CTX)
+            async with aiohttp_mod.ClientSession(connector=connector) as sess:
+                async with sess.get(url, headers=_random_headers(),
+                                    timeout=aiohttp_mod.ClientTimeout(total=12)) as resp:
+                    if resp.status != 200:
+                        if proxy:
                             self._dead_proxies.add(proxy)
-                            next_p = self._get_next_proxy()
-                            logger.warning("[!] Proxy Ban detected. Rotating to %s...", next_p)
-                            continue
-                        text = await resp.text(errors="replace")
-                        hits = []
-                        for m in re.finditer(r'class="result__url"[^>]*>([^<]+)<', text):
-                            raw = m.group(1).strip()
-                            if raw:
-                                hits.append({"url": raw if raw.startswith("http") else "https://" + raw,
-                                             "title": "", "dork": query})
-                        return hits[:5]
-            except Exception:
-                if proxy:
-                    self._dead_proxies.add(proxy)
+                        return []
+                    data = await resp.json(content_type=None)
+                    return [
+                        {"url": r.get("url", ""), "title": r.get("title", ""), "dork": query}
+                        for r in data.get("results", [])[:5]
+                        if r.get("url")
+                    ]
+        except Exception:
+            if proxy:
+                self._dead_proxies.add(proxy)
         return []
 
     async def async_search(self, session, query: str, qtype: str) -> List[Record]:
@@ -2425,16 +2449,28 @@ class DorkEngine:
             urls = {
                 "google": f"https://www.google.com/search?q={urllib.parse.quote(query)}&num=10",
                 "bing":   f"https://www.bing.com/search?q={urllib.parse.quote(query)}&count=10",
-                "ddg":    f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}",
+                "ddg":    f"{random.choice(_SEARX_INSTANCES)}/search?q={urllib.parse.quote(query)}&format=json&categories=general",
             }
-            resp = self.s.get(urls.get(engine, urls["google"]), timeout=15, use_cloudscraper=True)
-            if not resp.ok or not BeautifulSoup:
+            use_cs = engine != "ddg"  # SearXNG is a plain JSON API — no cloudscraper needed
+            resp = self.s.get(urls.get(engine, urls["google"]), timeout=15, use_cloudscraper=use_cs)
+            if not resp.ok:
+                return hits
+            # DDG/SearXNG returns JSON
+            if engine == "ddg":
+                try:
+                    data = resp.json()
+                    for r in data.get("results", [])[:10]:
+                        if r.get("url"):
+                            hits.append({"title": r.get("title", ""), "url": r["url"], "snippet": r.get("content", "")})
+                except Exception:
+                    pass
+                return hits
+            if not BeautifulSoup:
                 return hits
             soup      = BeautifulSoup(resp.text, "html.parser")
             selectors = {
                 "google": ("div.g", "h3", "a[href]", ".VwiC3b"),
                 "bing":   ("li.b_algo", "h2", "a", ".b_caption p"),
-                "ddg":    (".result", ".result__title", ".result__url", ".result__snippet"),
             }
             container, title_sel, link_sel, snippet_sel = selectors.get(engine, selectors["google"])
             for item in soup.select(container)[:10]:
@@ -2458,18 +2494,8 @@ class DorkEngine:
 # =======================================================================
 class ScrapeEngine:
     PASTE_SITES = [
-        ("Pastebin",    "https://psbdmp.ws/api/v3/search/{q}",                "json"),
+        # Paste intelligence is routed through SearXNG dorks and IntelX.
         ("IntelX",      "https://2.intelx.io/intelligent/search",             "intelx"),
-        ("Paste.ee",    "https://api.paste.ee/v1/search?query={q}",           "json"),
-        ("Rentry",      "https://rentry.co/api/search?q={q}",                 "json"),
-        ("Ghostbin",    "https://ghostbin.com/api/search?q={q}",              "json"),
-        ("JustPaste",   "https://justpaste.it/api/search?q={q}",              "json"),
-        ("DPaste",      "https://dpaste.org/api/search?q={q}",                "json"),
-        ("Hastebin",    "https://hastebin.com/api/search?q={q}",              "json"),
-        ("PrivateBin",  "https://privatebin.net/api/search?q={q}",            "json"),
-        ("ControlC",    "https://controlc.com/api/search?q={q}",              "json"),
-        ("Paste2",      "https://paste2.org/api/search?q={q}",                "json"),
-        ("PastebinPro", "https://pastebin.com/api/api_search.php?q={q}",      "xml"),
     ]
 
     CRED_RE  = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+\s*[:;|]\s*\S+", re.IGNORECASE)
@@ -2594,13 +2620,15 @@ class ScrapeEngine:
         }
         for sq in _ddg_queries.get(qt, [f'"{q}" password leak', f'"{q}" database dump']):
             try:
-                resp = self.s.get(f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(sq)}", timeout=10, use_cloudscraper=True)
-                if resp.ok and BeautifulSoup:
-                    soup = BeautifulSoup(resp.text, "html.parser")
-                    for r in soup.select(".result")[:5]:
-                        title_el = r.select_one(".result__title")
-                        if title_el:
-                            results["pastes"].append({"site":"DDG","title":title_el.get_text().strip(),"query":sq})
+                resp = self.s.get(f"{random.choice(_SEARX_INSTANCES)}/search?q={urllib.parse.quote(sq)}&format=json&categories=general", timeout=10)
+                if resp.ok:
+                    try:
+                        data = resp.json()
+                        for r in data.get("results", [])[:5]:
+                            if r.get("title"):
+                                results["pastes"].append({"site": "SearXNG", "title": r["title"], "url": r.get("url", ""), "query": sq})
+                    except Exception:
+                        pass
             except Exception:
                 continue
 
@@ -2670,18 +2698,19 @@ class ScrapeEngine:
             ]
         for dork in dorks:
             try:
-                resp = self.s.get(f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(dork)}", timeout=10, use_cloudscraper=True)
-                if resp.ok and BeautifulSoup:
-                    soup = BeautifulSoup(resp.text, "html.parser")
-                    for r in soup.select(".result")[:5]:
-                        title_el = r.select_one(".result__title")
-                        url_el   = r.select_one(".result__url")
-                        if title_el:
-                            hits.append({
-                                "dork":  dork,
-                                "title": title_el.get_text().strip(),
-                                "url":   url_el.get_text().strip() if url_el else "",
-                            })
+                resp = self.s.get(f"{random.choice(_SEARX_INSTANCES)}/search?q={urllib.parse.quote(dork)}&format=json&categories=general", timeout=10)
+                if resp.ok:
+                    try:
+                        data = resp.json()
+                        for r in data.get("results", [])[:5]:
+                            if r.get("title"):
+                                hits.append({
+                                    "dork":  dork,
+                                    "title": r["title"],
+                                    "url":   r.get("url", ""),
+                                })
+                    except Exception:
+                        pass
                 time.sleep(random.uniform(2.0, 4.0))
             except Exception:
                 continue
@@ -2694,29 +2723,13 @@ class ScrapeEngine:
             data = paste.get("data",{})
             if not pid:
                 return ""
-            raw_urls = {
-                "Pastebin":   f"https://psbdmp.ws/api/v3/dump/{pid}",
-                "Rentry":     f"https://rentry.co/api/raw/{pid}",
-                "Hastebin":   f"https://hastebin.com/raw/{pid}",
-                "DPaste":     f"https://dpaste.org/{pid}/raw/",
-                "Ghostbin":   f"https://ghostbin.com/paste/{pid}/raw",
-                "JustPaste":  f"https://justpaste.it/{pid}",
-                "PrivateBin": f"https://privatebin.net/?{pid}",
-                "ControlC":   f"https://controlc.com/{pid}",
-                "Paste2":     f"https://paste2.org/raw/{pid}",
-                "PastebinPro":f"https://pastebin.com/raw/{pid}",
-            }
+            raw_urls: dict = {}  # paste fetch URLs — resolved per site name
             if site == "IntelX":
                 key = self.db.get_key("intelx")
                 if key:
                     resp = self.s.get(f"https://2.intelx.io/file/read?type=1&systemid={pid}&k={key}", timeout=15)
                     if resp.ok:
                         return resp.text[:10000]
-            elif site == "Paste.ee":
-                resp = self.s.get(f"https://api.paste.ee/v1/pastes/{pid}", timeout=10)
-                if resp.ok:
-                    sections = resp.json().get("paste",{}).get("sections",[])
-                    return "\n".join(s.get("contents","") for s in sections)[:10000]
             elif site in raw_urls:
                 resp = self.s.get(raw_urls[site], timeout=10)
                 if resp.ok and resp.text:
@@ -2844,29 +2857,24 @@ class HashEngine:
         return list(set(mutations))
 
     def _online(self, h: str) -> Optional[str]:
-        apis = [
-            (f"https://www.nitrxgen.net/md5db/{h}", "text"),
-            (f"https://hashes.org/api.php?key=&query={h}", "json"),
-            (f"https://hash.help/api/lookup/{h}", "json"),
-            (f"https://hashkiller.io/api/search.php?hash={h}", "json"),
-        ]
+        # cmd5.org removed — paywalled, returns error for all hashes
+        # hashes.com requires a paid API key (HASHES_COM_API_KEY)
+        try:
+            from sources.helpers.config_handler import ConfigManager  # type: ignore
+            key = ConfigManager.get_key("HASHES_COM_API_KEY")
+            if not key:
+                return None
+            apis = [(f"https://hashes.com/en/api/search?hash={h}&key={key}", "json")]
+        except Exception:
+            return None
         _get = self._session.get if self._session else (lambda url, **kw: Session._null_response(url))
         for url, fmt in apis:
             try:
                 resp = _get(url, timeout=8)
                 if not resp.ok: continue
-                if fmt == "text":
-                    text = resp.text.strip()
-                    if not text or len(text) >= 100:
-                        continue
-                    tl = text.lower()
-                    if any(tl.startswith(p) for p in ("not found", "error", "invalid", "no result", "not in", "cmd5-error", "not exist", "code erreur", "erreur", "unknown")):
-                        continue
-                    return text
-                elif fmt == "json":
-                    data = resp.json()
-                    if data.get("result") or data.get("plaintext"):
-                        return data.get("result", data.get("plaintext",""))
+                data = resp.json()
+                if data.get("result") or data.get("plaintext"):
+                    return data.get("result", data.get("plaintext", ""))
             except Exception: continue
         return None
 
@@ -7090,15 +7098,30 @@ def _main_run(args, config: NoxConfig, db: NoxDB) -> None:
         if not candidate.is_dir():
             candidate = Path("/usr/share/nox-cli/sources")
         if candidate.is_dir():
+            # Copy all current package sources to runtime dir
             count = 0
+            pkg_names = set()
             for jf in candidate.glob("*.json"):
+                pkg_names.add(jf.name)
                 dst = SOURCE_DIR / jf.name
                 try:
                     _shutil.copy2(jf, dst)
                     count += 1
                 except OSError:
                     pass
-            out("ok", f"Reset {count} source plugins from package.")
+            # Remove orphaned plugins no longer in the package
+            removed = 0
+            for existing in SOURCE_DIR.glob("*.json"):
+                if existing.name not in pkg_names:
+                    try:
+                        existing.unlink()
+                        removed += 1
+                    except OSError:
+                        pass
+            msg = f"Reset {count} source plugins from package."
+            if removed:
+                msg += f" Removed {removed} orphaned plugin(s)."
+            out("ok", msg)
         else:
             out("warn", "Package sources directory not found.")
         return

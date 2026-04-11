@@ -139,6 +139,14 @@ SERVICE_REGISTRY: Dict[str, Dict] = {
     "WHOXY_API_KEY":            {"display": "Whoxy WHOIS",               "public": False},
     "ZEROBOUNCE_API_KEY":       {"display": "ZeroBounce",                "public": False},
     "ZOOMEYE_API_KEY":          {"display": "ZoomEye",                   "public": False},
+    # ── Added in v1.0.1 ───────────────────────────────────────────────
+    "EMAILREP_API_KEY":         {"display": "EmailRep.io",               "public": False},
+    "HASHES_COM_API_KEY":       {"display": "Hashes.com (crack API)",    "public": False},
+    "THREATFOX_API_KEY":        {"display": "ThreatFox (abuse.ch)",      "public": False},
+    "URLHAUS_API_KEY":          {"display": "URLhaus (abuse.ch)",        "public": False},
+    "MALWAREBAZAAR_API_KEY":    {"display": "MalwareBazaar (abuse.ch)",  "public": False},
+    "FULLHUNT_API_KEY":         {"display": "FullHunt (attack surface)", "public": False},
+    "NETLAS_API_KEY":           {"display": "Netlas.io (internet scanner)", "public": False},
 }
 
 _PRIVATE_KEYS = {k: v for k, v in SERVICE_REGISTRY.items() if not v["public"]}

@@ -1,0 +1,33 @@
+{
+    "name": "ipapi_is",
+    "category": "geolocation",
+    "endpoint": "https://api.ipapi.is/?q={target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "org": "$.org",
+        "asn": "$.asn.asn",
+        "abuse": "$.abuse.email"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "ip",
+    "output_type": [
+        "domain"
+    ],
+    "normalization_map": {
+        "org": "asn_org",
+        "asn": "asn_number",
+        "abuse": "abuse_contact"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://api.ipapi.is",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

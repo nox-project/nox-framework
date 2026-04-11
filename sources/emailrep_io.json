@@ -3,13 +3,17 @@
     "category": "email_rep",
     "endpoint": "https://emailrep.io/{target}",
     "method": "GET",
-    "requires_auth": false,
+    "requires_auth": true,
     "selectors": {
         "reputation": "$.reputation"
     },
     "rate_limit": 2.0,
-    "headers": {},
-    "api_key_slots": [],
+    "headers": {
+        "Key": "{EMAILREP_API_KEY}"
+    },
+    "api_key_slots": [
+        "{EMAILREP_API_KEY}"
+    ],
     "input_type": "email",
     "output_type": [
         "email"

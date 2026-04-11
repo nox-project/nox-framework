@@ -1,7 +1,7 @@
 {
     "name": "dehashed",
     "category": "breaches",
-    "endpoint": "https://api.dehashed.com/search?query={target}",
+    "endpoint": "https://api.dehashed.com/v2/search?query={target}",
     "method": "GET",
     "requires_auth": true,
     "selectors": {

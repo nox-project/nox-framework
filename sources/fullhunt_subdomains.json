@@ -1,0 +1,34 @@
+{
+    "name": "fullhunt_subdomains",
+    "category": "dns_recon",
+    "endpoint": "https://fullhunt.io/api/v1/domain/{target}/subdomains",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "hosts": "$.hosts"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-API-KEY": "{FULLHUNT_API_KEY}"
+    },
+    "api_key_slots": [
+        "{FULLHUNT_API_KEY}"
+    ],
+    "input_type": "domain",
+    "output_type": [
+        "domain",
+        "ip"
+    ],
+    "normalization_map": {
+        "host": "domain"
+    },
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://fullhunt.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

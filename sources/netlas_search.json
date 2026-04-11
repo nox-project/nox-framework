@@ -1,0 +1,35 @@
+{
+    "name": "netlas_search",
+    "category": "scanners",
+    "endpoint": "https://app.netlas.io/api/responses/?q={target}&source_type=include&start=0&fields=",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "items": "$.items"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-API-Key": "{NETLAS_API_KEY}"
+    },
+    "api_key_slots": [
+        "{NETLAS_API_KEY}"
+    ],
+    "input_type": "ip",
+    "output_type": [
+        "ip",
+        "domain"
+    ],
+    "normalization_map": {
+        "data.ip": "ip_address",
+        "data.domain": "domain"
+    },
+    "tags": [
+        "passive",
+        "infrastructure"
+    ],
+    "health_check_url": "https://app.netlas.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

@@ -1,0 +1,31 @@
+{
+    "name": "circl_hashlookup",
+    "category": "hashes",
+    "endpoint": "https://hashlookup.circl.lu/lookup/md5/{target}",
+    "method": "GET",
+    "requires_auth": false,
+    "selectors": {
+        "filename": "$.FileName",
+        "known_malicious": "$.KnownMalicious"
+    },
+    "rate_limit": 1.0,
+    "headers": {},
+    "api_key_slots": [],
+    "input_type": "hash",
+    "output_type": [
+        "hash"
+    ],
+    "normalization_map": {
+        "FileName": "filename",
+        "MD5": "hash_md5"
+    },
+    "tags": [
+        "passive",
+        "fast"
+    ],
+    "health_check_url": "https://hashlookup.circl.lu",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

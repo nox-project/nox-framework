@@ -1,0 +1,41 @@
+{
+    "name": "threatfox",
+    "category": "threat_intel",
+    "endpoint": "https://threatfox-api.abuse.ch/api/v1/",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "results": "$.data"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "API-KEY": "{THREATFOX_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    "payload_template": {
+        "query": "search_ioc",
+        "search_term": "{target}"
+    },
+    "api_key_slots": [
+        "{THREATFOX_API_KEY}"
+    ],
+    "input_type": "any",
+    "output_type": [
+        "ip",
+        "domain",
+        "hash"
+    ],
+    "normalization_map": {
+        "ioc": "indicator",
+        "malware": "malware_family"
+    },
+    "tags": [
+        "passive",
+        "threat"
+    ],
+    "health_check_url": "https://threatfox-api.abuse.ch",
+    "expected_status": 200,
+    "reliability_score": 5,
+    "backup_endpoints": [],
+    "confidence": 1.0
+}

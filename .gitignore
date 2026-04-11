@@ -39,6 +39,3 @@ Thumbs.db
 # Env files
 .env
 .env.*
-
-# Internal development notes — not for distribution
-IMPROVEMENTS.md
