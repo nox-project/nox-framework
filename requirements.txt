@@ -2,11 +2,12 @@
 # Python 3.8+  |  pip install -r requirements.txt
 
 # ── Core (Async) ───────────────────────────────────────────────────────
-aiohttp>=3.9.0
+aiohttp>=3.13.5
 aiohttp-socks>=0.8.4          # SOCKS4/5 proxy support for aiohttp
 aiosqlite>=0.20.0             # async SQLite (forensic persistence DB)
 httpx[http2]>=0.27.0          # Guardian Engine: dynamic proxy fetch + HTTP/2
 brotli>=1.1.0                 # brotli decompression for aiohttp br responses
+zstandard>=0.23.0             # zstd decompression for aiohttp zstd responses (Cloudflare/Fastly CDNs)
 
 # ── Intelligence & Scraping ────────────────────────────────────────────
 requests>=2.31.0

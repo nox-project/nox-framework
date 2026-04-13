@@ -2,6 +2,15 @@
 
 All notable changes to NOX are documented here.
 
+## [1.0.1] — 2026-04-13
+
+### Dependencies
+- **Updated:** `aiohttp` minimum pin raised to `>=3.13.5` (connection-pool stability fixes under high concurrency)
+- **Added:** `zstandard>=0.23.0` — enables native zstd decompression in aiohttp for Cloudflare/Fastly CDN responses
+
+### Engine
+- **Updated:** `Accept-Encoding` header now includes `zstd` (`gzip, deflate, br, zstd`) to match Chrome 124+ behaviour
+
 ## [1.0.1] — 2026-04-11
 
 ### Sources

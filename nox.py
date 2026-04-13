@@ -1598,7 +1598,7 @@ def _random_headers(extra: Optional[Dict] = None) -> Dict[str, str]:
         "User-Agent":                ua,
         "Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language":           random.choice(_ACCEPT_LANG_POOL),
-        "Accept-Encoding":           "gzip, deflate, br",
+        "Accept-Encoding":           "gzip, deflate, br, zstd",
         "DNT":                       "1",
         "Connection":                "keep-alive",
         "Upgrade-Insecure-Requests": "1",
