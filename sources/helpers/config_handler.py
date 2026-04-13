@@ -94,7 +94,6 @@ SERVICE_REGISTRY: Dict[str, Dict] = {
     "GOOGLE_CX_KEY":            {"display": "Google Custom Search (API key)", "public": False},
     "GOOGLE_CX_ID":            {"display": "Google Custom Search (CX ID)",   "public": False},
     "GREYNOISE_API_KEY":        {"display": "GreyNoise",                 "public": False},
-    "HASHES_API_KEY":           {"display": "Hashes.org",                "public": False},
     "HIBP_API_KEY":             {"display": "HaveIBeenPwned",            "public": False},
     "HIPPO_API_KEY":            {"display": "EmailHippo",                "public": False},
     "HUNTER_API_KEY":           {"display": "Hunter.io",                 "public": False},
@@ -147,6 +146,8 @@ SERVICE_REGISTRY: Dict[str, Dict] = {
     "MALWAREBAZAAR_API_KEY":    {"display": "MalwareBazaar (abuse.ch)",  "public": False},
     "FULLHUNT_API_KEY":         {"display": "FullHunt (attack surface)", "public": False},
     "NETLAS_API_KEY":           {"display": "Netlas.io (internet scanner)", "public": False},
+    # ── Added in v1.0.2 ───────────────────────────────────────────────
+    "LEAK_LOOKUP_API_KEY":      {"display": "Leak-Lookup",               "public": False},
 }
 
 _PRIVATE_KEYS = {k: v for k, v in SERVICE_REGISTRY.items() if not v["public"]}

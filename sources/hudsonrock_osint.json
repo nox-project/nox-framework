@@ -7,8 +7,10 @@
     "selectors": {
         "stealers": "$.stealers"
     },
-    "rate_limit": 1.0,
-    "headers": {},
+    "rate_limit": 5.0,
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+    },
     "api_key_slots": [],
     "input_type": "email",
     "output_type": [
@@ -25,7 +27,7 @@
     ],
     "health_check_url": "https://cavalier.hudsonrock.com",
     "expected_status": 200,
-    "reliability_score": 4,
+    "reliability_score": 3,
     "backup_endpoints": [],
-    "confidence": 0.85
+    "confidence": 0.7
 }

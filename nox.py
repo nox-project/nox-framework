@@ -2105,12 +2105,8 @@ class ProxyManager:
             sys.exit(1)
 
     _PROXY_SOURCES = [
-        (
-            "https://api.proxyscrape.com/v2/"
-            "?request=displayproxies&protocol=http&timeout=5000"
-            "&country=all&ssl=all&anonymity=all"
-        ),
-        "https://www.proxy-list.download/api/v1/get?type=http&anon=elite",
+        "https://api.proxyscrape.com/v3/free-proxy-list/get?request=displayproxies&protocol=http&timeout=5000&proxy_format=protocolipport&format=text",
+        "https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/protocols/http/data.txt",
         "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
     ]
 
@@ -2225,6 +2221,7 @@ class DorkingEngine(Src):
         self._dead_proxies: set = set()
         self._proxy_index: int = 0
         self.proxies = ProxyManager.get_proxies()
+        self._dead_instances: set = set()
 
     def _get_next_proxy(self) -> Optional[str]:
         live = [p for p in self.proxies if p not in self._dead_proxies]
@@ -2294,7 +2291,11 @@ class DorkingEngine(Src):
             from aiohttp_socks import ProxyConnector as _ProxyConnector
         except ImportError:
             _ProxyConnector = None
-        instance = random.choice(_SEARX_INSTANCES)
+        live_instances = [i for i in _SEARX_INSTANCES if i not in self._dead_instances]
+        if not live_instances:
+            self._dead_instances.clear()
+            live_instances = list(_SEARX_INSTANCES)
+        instance = random.choice(live_instances)
         url = f"{instance}/search?q={urllib.parse.quote(query)}&format=json&categories=general"
         proxy = self._get_next_proxy()
         try:
@@ -2306,6 +2307,7 @@ class DorkingEngine(Src):
                 async with sess.get(url, headers=_random_headers(),
                                     timeout=aiohttp_mod.ClientTimeout(total=12)) as resp:
                     if resp.status != 200:
+                        self._dead_instances.add(instance)
                         if proxy:
                             self._dead_proxies.add(proxy)
                         return []
@@ -2316,6 +2318,7 @@ class DorkingEngine(Src):
                         if r.get("url")
                     ]
         except Exception:
+            self._dead_instances.add(instance)
             if proxy:
                 self._dead_proxies.add(proxy)
         return []
@@ -2452,43 +2455,19 @@ class DorkEngine:
     def _search(self, query: str, engine: str) -> List[dict]:
         hits = []
         try:
-            urls = {
-                "google": f"https://www.google.com/search?q={urllib.parse.quote(query)}&num=10",
-                "bing":   f"https://www.bing.com/search?q={urllib.parse.quote(query)}&count=10",
-                "ddg":    f"{random.choice(_SEARX_INSTANCES)}/search?q={urllib.parse.quote(query)}&format=json&categories=general",
-            }
-            use_cs = engine != "ddg"  # SearXNG is a plain JSON API — no cloudscraper needed
-            resp = self.s.get(urls.get(engine, urls["google"]), timeout=15, use_cloudscraper=use_cs)
+            # Direct Google/Bing HTML scraping is blocked by CAPTCHA/consent walls
+            # since 2024. Route all engines through SearXNG JSON API.
+            url = f"{random.choice(_SEARX_INSTANCES)}/search?q={urllib.parse.quote(query)}&format=json&categories=general"
+            resp = self.s.get(url, timeout=15, use_cloudscraper=False)
             if not resp.ok:
                 return hits
-            # DDG/SearXNG returns JSON
-            if engine == "ddg":
-                try:
-                    data = resp.json()
-                    for r in data.get("results", [])[:10]:
-                        if r.get("url"):
-                            hits.append({"title": r.get("title", ""), "url": r["url"], "snippet": r.get("content", "")})
-                except Exception:
-                    pass
-                return hits
-            if not BeautifulSoup:
-                return hits
-            soup      = BeautifulSoup(resp.text, "html.parser")
-            selectors = {
-                "google": ("div.g", "h3", "a[href]", ".VwiC3b"),
-                "bing":   ("li.b_algo", "h2", "a", ".b_caption p"),
-            }
-            container, title_sel, link_sel, snippet_sel = selectors.get(engine, selectors["google"])
-            for item in soup.select(container)[:10]:
-                title_el = item.select_one(title_sel)
-                link_el  = item.select_one(link_sel)
-                snip_el  = item.select_one(snippet_sel)
-                if title_el:
-                    url = link_el.get("href","") if link_el else ""
+            data = resp.json()
+            for r in data.get("results", [])[:10]:
+                if r.get("url"):
                     hits.append({
-                        "title":   title_el.get_text().strip(),
-                        "url":     url if url.startswith("http") else "",
-                        "snippet": snip_el.get_text().strip() if snip_el else "",
+                        "title":   r.get("title", ""),
+                        "url":     r["url"],
+                        "snippet": r.get("content", ""),
                     })
         except Exception:
             pass
@@ -6409,6 +6388,39 @@ class NoxSourceProvider(FileSystemProvider):
         if status not in range(200, 300) or not text:
             return []
 
+        # Two-phase poll: if poll_endpoint is defined, treat the first response
+        # as a job submission, extract the job ID via poll_id_field, then poll
+        # poll_endpoint?<poll_id_param>=<id> until results arrive.
+        poll_endpoint = d.get("poll_endpoint", "")
+        if poll_endpoint:
+            try:
+                job_id = json.loads(text).get(d.get("poll_id_field", "id"))
+            except Exception:
+                job_id = None
+            if not job_id:
+                return []
+            poll_param  = d.get("poll_id_param", "id")
+            poll_root   = d.get("poll_json_root", d.get("json_root", ""))
+            poll_url    = f"{poll_endpoint}?{poll_param}={job_id}"
+            delay = 2
+            for _ in range(4):
+                await asyncio.sleep(delay)
+                p_status, p_text, _ = await self._get(session, poll_url, headers=hdrs)
+                if p_status not in range(200, 300) or not p_text:
+                    delay = min(delay * 2, 16)
+                    continue
+                try:
+                    items = json.loads(p_text)
+                    for key in (poll_root.split(".") if poll_root else []):
+                        if isinstance(items, dict):
+                            items = items.get(key, [])
+                    if isinstance(items, list) and items:
+                        return self._by_json(p_text, poll_root, d.get("field_map", {}))
+                except Exception:
+                    pass
+                delay = min(delay * 2, 16)
+            return []
+
         regex = d.get("regex_pattern", "")
         if regex:
             return self._by_regex(text, regex)
@@ -6528,8 +6540,15 @@ class SourceOrchestrator:
                     "payload":               raw.get("payload_template") or raw.get("payload") or {},
                     # Pass resolved slot keys so FileSystemProvider can use them
                     "_slot_keys":            slot_keys,
+                    # Two-phase poll support
+                    "poll_endpoint":         raw.get("poll_endpoint", ""),
+                    "poll_id_field":         raw.get("poll_id_field", "id"),
+                    "poll_id_param":         raw.get("poll_id_param", "id"),
+                    "poll_json_root":        raw.get("poll_json_root", ""),
                 }
-                sources.append(NoxSourceProvider(self._sem, self._db, self._config, defn))
+                inst = NoxSourceProvider(self._sem, self._db, self._config, defn)
+                inst._bypass_required = raw.get("bypass_required") or []
+                sources.append(inst)
                 logger.debug("SourceOrchestrator: loaded %s", jf.name)
             except Exception as exc:
                 logger.warning("SourceOrchestrator: failed %s — %s", jf.name, exc)
@@ -6558,8 +6577,14 @@ class SourceOrchestrator:
     def get_sources(self, session: "Session", qtype: str) -> List[AsyncSource]:
         """Return plugin sources applicable to qtype, pre-filtered to avoid creating unnecessary tasks."""
         self._ensure_loaded()
+        # curl_cffi presence cached in OPTIONAL after first _try_import call
+        _has_cffi = "curl_cffi" in OPTIONAL or _try_import("curl_cffi") is not None
         sources: List[AsyncSource] = []
         for src in self._nox_sources:
+            bypass = getattr(src, "_bypass_required", []) or []
+            if "cloudflare" in bypass and not _has_cffi:
+                logger.debug("Skipping %s — cloudflare bypass required, curl_cffi absent", src.name)
+                continue
             input_type = getattr(src, "_input_type", "")
             if not input_type or input_type == "any" or not qtype or input_type == qtype:
                 sources.append(src)

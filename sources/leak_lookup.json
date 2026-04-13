@@ -3,17 +3,21 @@
     "category": "breaches",
     "endpoint": "https://leak-lookup.com/api/search",
     "method": "POST",
-    "requires_auth": false,
+    "requires_auth": true,
     "selectors": {
         "results": "$.message"
     },
     "rate_limit": 1.0,
-    "headers": {},
+    "headers": {
+        "X-API-Key": "{LEAK_LOOKUP_API_KEY}"
+    },
     "payload_template": {
         "query": "{target}",
         "type": "email_address"
     },
-    "api_key_slots": [],
+    "api_key_slots": [
+        "{LEAK_LOOKUP_API_KEY}"
+    ],
     "input_type": "email",
     "output_type": [
         "email"

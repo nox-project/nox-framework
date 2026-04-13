@@ -71,6 +71,11 @@ class SourceConfig(BaseModel):
     backup_endpoints:  List[str]               = Field(default_factory=list)
     # H2: optional confidence override — when set, takes precedence over formula
     confidence:        Optional[float]         = None
+    # Two-phase poll support (e.g. IntelX: POST → job_id → GET results)
+    poll_endpoint:     Optional[str]           = None
+    poll_id_field:     Optional[str]           = None
+    poll_id_param:     Optional[str]           = None
+    poll_json_root:    Optional[str]           = None
 
     @field_validator("reliability_score")
     @classmethod
@@ -131,6 +136,10 @@ def _mk(
     bypass_required: Optional[List[str]] = None,
     user_agent_type: Optional[str] = None,
     backup_endpoints: Optional[List[str]] = None,
+    poll_endpoint: Optional[str] = None,
+    poll_id_field: Optional[str] = None,
+    poll_id_param: Optional[str] = None,
+    poll_json_root: Optional[str] = None,
 ) -> SourceConfig:
     return SourceConfig(
         name=name, category=category, endpoint=endpoint, method=method,
@@ -150,6 +159,10 @@ def _mk(
         bypass_required=bypass_required or None,
         user_agent_type=user_agent_type,
         backup_endpoints=backup_endpoints or [],
+        poll_endpoint=poll_endpoint,
+        poll_id_field=poll_id_field,
+        poll_id_param=poll_id_param,
+        poll_json_root=poll_json_root,
     )
 
 
@@ -251,10 +264,12 @@ FREE_PUBLIC_SOURCES: List[SourceConfig] = [
     _base("hudsonrock_osint", "breach_data",
           "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-email?email={target}", "GET",
           {"stealers": "$.stealers"},
+          rate_limit=5.0,
+          headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"},
           input_type="email", output_type=["email", "domain", "username"],
           normalization_map={"stealers": "breach_record"},
           tags=["passive", "stealth"],
-          health_check_url="https://cavalier.hudsonrock.com", reliability_score=4),
+          health_check_url="https://cavalier.hudsonrock.com", reliability_score=3),
 
     _base("ipinfo_io", "geolocation",
           "https://ipinfo.io/{target}/json", "GET",
@@ -459,32 +474,15 @@ FREE_PUBLIC_SOURCES: List[SourceConfig] = [
           tags=["passive"],
           health_check_url="https://packetstormsecurity.com", reliability_score=4),
 
-    _base("scylla_sh_search", "breaches",
-          "https://scylla.so/search?q={target}", "GET",
-          {"results": "$.*"},
-          input_type="email", output_type=["email", "domain"],
-          tags=["passive", "stealth"],
-          health_check_url="https://scylla.so", reliability_score=2, is_volatile=True,
-          bypass_required=["cloudflare"], user_agent_type="browser",
-          backup_endpoints=["https://scylla.so/api/search?q={target}"]),
-
-    _base("vigilante_pw", "breaches",
-          "https://vigilante.pw/api/search?q={target}", "GET",
-          {"results": "$.results"},
-          input_type="email", output_type=["email"],
-          tags=["passive", "stealth"],
-          health_check_url="https://vigilante.pw", reliability_score=2, is_volatile=True),
-
-    # ── New free sources (v1.0.1) ─────────────────────────────────────────────
-
     _base("proxynova_comb", "breaches",
           "https://api.proxynova.com/comb?query={target}", "GET",
           {"lines": "$.lines"},
           input_type="email", output_type=["email"],
           normalization_map={"lines": "credential_line"},
           tags=["passive", "stealth"],
-          health_check_url="https://api.proxynova.com",
-          reliability_score=3, is_volatile=True),
+          health_check_url="https://api.proxynova.com", reliability_score=3, is_volatile=True),
+
+    # ── New free sources (v1.0.1) ─────────────────────────────────────────────
 
     _base("shodan_internetdb", "scanners",
           "https://internetdb.shodan.io/{target}", "GET",
@@ -854,6 +852,10 @@ AUTHENTICATED_PREMIUM_SOURCES += [
           payload_template={"term": "{target}", "buckets": [], "lookuplevel": 0,
                             "maxresults": 100, "timeout": 0, "datefrom": "", "dateto": "",
                             "sort": 4, "media": 0, "terminate": []},
+          poll_endpoint="https://2.intelx.io/intelligent/search/result",
+          poll_id_field="id",
+          poll_id_param="id",
+          poll_json_root="records",
           tags=["passive", "stealth"],
           health_check_url="https://2.intelx.io", reliability_score=5),
 
@@ -925,22 +927,15 @@ AUTHENTICATED_PREMIUM_SOURCES += [
           tags=["passive", "stealth"],
           health_check_url="https://api.flare.io", reliability_score=4),
 
-    _base("leak_lookup", "breaches",
+    _auth("leak_lookup", "breaches",
           "https://leak-lookup.com/api/search", "POST",
           {"results": "$.message"},
+          headers={"X-API-Key": "{LEAK_LOOKUP_API_KEY}"},
+          api_key_slots=["{LEAK_LOOKUP_API_KEY}"],
           input_type="email", output_type=["email"],
           payload_template={"query": "{target}", "type": "email_address"},
           tags=["passive", "stealth"],
           health_check_url="https://leak-lookup.com", reliability_score=3, is_volatile=True),
-
-    _auth("cit0day", "breaches",
-          "https://cit0day.in/api/v1/search?query={target}", "GET",
-          {"results": "$.results"},
-          headers={"Authorization": "Bearer {CIT0DAY_API_KEY}"},
-          api_key_slots=["{CIT0DAY_API_KEY}"],
-          input_type="email", output_type=["email"],
-          tags=["passive", "stealth"],
-          health_check_url="https://cit0day.in", reliability_score=2, is_volatile=True),
 
     # ── DNS Recon ─────────────────────────────────────────────────────────────
 
@@ -1154,7 +1149,7 @@ AUTHENTICATED_PREMIUM_SOURCES += [
           api_key_slots=["{TWITTER_BEARER_TOKEN}"],
           input_type="username", output_type=["username"],
           tags=["passive"],
-          health_check_url="https://api.twitter.com", reliability_score=4),
+          health_check_url="https://api.twitter.com", reliability_score=1),
 
     _auth("github_code_search", "code",
           "https://api.github.com/search/code?q={target}", "GET",

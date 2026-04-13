@@ -40,5 +40,9 @@
     "expected_status": 200,
     "reliability_score": 5,
     "backup_endpoints": [],
+    "poll_endpoint": "https://2.intelx.io/intelligent/search/result",
+    "poll_id_field": "id",
+    "poll_id_param": "id",
+    "poll_json_root": "records",
     "confidence": 1.0
 }

@@ -10,7 +10,7 @@ brotli>=1.1.0                 # brotli decompression for aiohttp br responses
 zstandard>=0.23.0             # zstd decompression for aiohttp zstd responses (Cloudflare/Fastly CDNs)
 
 # ── Intelligence & Scraping ────────────────────────────────────────────
-requests>=2.31.0
+requests>=2.32.3
 certifi>=2024.2.2             # up-to-date CA bundle for SSL verification
 cloudscraper>=1.2.71          # Cloudflare-protected endpoint bypass
 beautifulsoup4>=4.12.3
