@@ -4,6 +4,25 @@ All notable changes to NOX are documented here.
 
 ## [1.0.1] — 2026-04-13
 
+### Sources
+- **Removed:** `cit0day` (HTML fingerprint challenge, no JSON response), `vigilante_pw` (redirects to dehashed.com), `scylla_sh_search` (domain parked, permanently unreachable)
+- **Restored:** `proxynova_comb` (live, returns valid JSON — was incorrectly removed)
+- **Fixed:** `leak_lookup` now requires API key (`LEAK_LOOKUP_API_KEY`) — provider removed unauthenticated access
+- **Fixed:** `intelx_search` two-phase poll implemented — plugin previously submitted the search job but never polled for results, returning 0 records for all queries
+- **Fixed:** `hudsonrock_osint` missing `User-Agent` header added — endpoint returns 403 without a browser UA
+- **Removed:** `HASHES_API_KEY` registry entry — hashes.org shut down in 2023; `HASHES_COM_API_KEY` is the correct active slot
+- **Added:** `LEAK_LOOKUP_API_KEY` to service registry
+
+### Engine
+- **Fixed:** `bypass_required` field in source plugins now enforced at runtime — sources declaring `["cloudflare"]` bypass are skipped when `curl_cffi` is absent (previously the field was parsed but never read)
+- **Fixed:** Guardian proxy auto-fetch updated to ProxyScrape v3 API (v2 deprecated Q1 2026); `proxy-list.download` replaced with `proxifly` free list
+
+### Dependencies
+- **Updated:** `requests>=2.32.3` (CVE fixes)
+
+### README
+- Source count updated: 123 active plugins
+
 ### Dependencies
 - **Updated:** `aiohttp` minimum pin raised to `>=3.13.5` (connection-pool stability fixes under high concurrency)
 - **Added:** `zstandard>=0.23.0` — enables native zstd decompression in aiohttp for Cloudflare/Fastly CDN responses
