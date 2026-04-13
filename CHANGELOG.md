@@ -2,6 +2,14 @@
 
 All notable changes to NOX are documented here.
 
+## [1.0.2] — 2026-04-13
+
+### Engine
+- **Fixed:** `_parse_breach_date` now handles full ISO-8601 timestamps with timezone offsets (`+02:00`, `Z`), written date formats (`March 5th, 2020`), and slash-separated dates (`2021/10/05`) via `python-dateutil`; old strptime chain preserved as fallback when `dateutil` is unavailable
+
+### Dependencies
+- **Added:** `python-dateutil>=2.8.2` — robust date parsing for breach timestamps across heterogeneous source APIs
+
 ## [1.0.1] — 2026-04-13
 
 ### Dependencies

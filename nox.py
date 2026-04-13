@@ -91,6 +91,11 @@ except ImportError:
 import sqlite3 as _sqlite3_fallback
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
+
+try:
+    from dateutil import parser as date_parser
+except ImportError:
+    date_parser = None
 from enum import Enum, auto
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Any, Tuple
@@ -547,6 +552,20 @@ def _parse_breach_date(raw: str) -> Optional[datetime]:
     if not raw:
         return None
     raw = raw.strip()
+
+    m = re.fullmatch(r"(\d{4})", raw)
+    if m:
+        return datetime(int(m.group(1)), 1, 1, tzinfo=timezone.utc)
+
+    if date_parser:
+        try:
+            dt = date_parser.parse(raw, fuzzy=True)
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt
+        except Exception:
+            pass
+
     for fmt in ("%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
             return datetime.strptime(raw[:19], fmt).replace(tzinfo=timezone.utc)
@@ -560,9 +579,6 @@ def _parse_breach_date(raw: str) -> Optional[datetime]:
                 return datetime(int(m.group(3)), month, day, tzinfo=timezone.utc)
             except ValueError:
                 pass
-    m = re.fullmatch(r"(\d{4})", raw)
-    if m:
-        return datetime(int(m.group(1)), 1, 1, tzinfo=timezone.utc)
     return None
 
 

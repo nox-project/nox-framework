@@ -17,6 +17,7 @@ beautifulsoup4>=4.12.3
 lxml>=5.1.0                   # fast BS4 parser; required for HTML/XML scraping
 dnspython>=2.6.0              # DNS resolution (MX, A, TXT lookups)
 phonenumbers>=8.13.0          # phone number parsing and validation
+python-dateutil>=2.8.2        # robust date parsing for ISO and rare formats
 
 # ── Validation ─────────────────────────────────────────────────────────
 pydantic>=2.0.0               # source schema validation and build engine
