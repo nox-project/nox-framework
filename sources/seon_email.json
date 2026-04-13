@@ -1,0 +1,41 @@
+{
+    "name": "seon_email",
+    "category": "enrichment",
+    "endpoint": "https://api.seon.io/SeonRestService/email-api/v3",
+    "method": "POST",
+    "requires_auth": true,
+    "selectors": {
+        "data": "$.data"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "X-API-KEY": "{SEON_API_KEY}",
+        "Content-Type": "application/json"
+    },
+    "payload_template": {
+        "email": "{target}"
+    },
+    "api_key_slots": [
+        "{SEON_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "domain",
+        "username"
+    ],
+    "normalization_map": {
+        "email": "email_address",
+        "domain": "domain",
+        "full_name": "full_name",
+        "phone_number": "phone"
+    },
+    "tags": [
+        "passive"
+    ],
+    "health_check_url": "https://api.seon.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}

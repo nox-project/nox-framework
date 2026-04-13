@@ -1,0 +1,38 @@
+{
+    "name": "flare_leaksdb",
+    "category": "breaches",
+    "endpoint": "https://api.flare.io/leaksdb/v2/credentials/email/{target}",
+    "method": "GET",
+    "requires_auth": true,
+    "selectors": {
+        "items": "$.items"
+    },
+    "rate_limit": 1.0,
+    "headers": {
+        "Authorization": "Bearer {FLARE_API_KEY}"
+    },
+    "api_key_slots": [
+        "{FLARE_API_KEY}"
+    ],
+    "input_type": "email",
+    "output_type": [
+        "email",
+        "username"
+    ],
+    "normalization_map": {
+        "email": "email_address",
+        "username": "username",
+        "password": "plaintext_password",
+        "hash": "password_hash",
+        "source": "breach_name"
+    },
+    "tags": [
+        "passive",
+        "stealth"
+    ],
+    "health_check_url": "https://api.flare.io",
+    "expected_status": 200,
+    "reliability_score": 4,
+    "backup_endpoints": [],
+    "confidence": 0.85
+}
