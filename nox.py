@@ -178,15 +178,19 @@ def initialize_environment() -> None:
     for d in (HOME_NOX, LOG_DIR, REPORT_DIR, SOURCE_DIR, VAULT_DIR, PROVIDER_DIR):
         d.mkdir(mode=0o755, parents=True, exist_ok=True)
 
-    # Ownership fix: if run as root previously, re-own to the real user
-    real_uid = int(os.environ.get("SUDO_UID", os.getuid()))
-    real_gid = int(os.environ.get("SUDO_GID", os.getgid()))
-    if os.getuid() == 0 and real_uid != 0:
-        for d in (HOME_NOX, LOG_DIR, REPORT_DIR, SOURCE_DIR, VAULT_DIR):
-            try:
-                os.chown(d, real_uid, real_gid)
-            except OSError:
-                pass
+    # Ownership fix: if run as root previously, re-own to the real user (POSIX only)
+    if hasattr(os, "getuid") and hasattr(os, "getgid") and hasattr(os, "chown"):
+        try:
+            real_uid = int(os.environ.get("SUDO_UID", os.getuid()))
+            real_gid = int(os.environ.get("SUDO_GID", os.getgid()))
+            if os.getuid() == 0 and real_uid != 0:
+                for d in (HOME_NOX, LOG_DIR, REPORT_DIR, SOURCE_DIR, VAULT_DIR):
+                    try:
+                        os.chown(d, real_uid, real_gid)
+                    except OSError:
+                        pass
+        except Exception:
+            pass
 
     # Create default config.ini on first run
     _default_cfg = HOME_NOX / "config.ini"
