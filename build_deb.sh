@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-# NOX v1.0.1 — .deb build script (FPM)
+# NOX v1.0.2 — .deb build script (FPM)
 # Requires: fpm  →  gem install fpm
 
-VERSION="1.0.1"
+VERSION="1.0.2"
 PKG_NAME="nox-cli"
 ARCH="all"
 OUT_DIR="dist"
