@@ -2,6 +2,11 @@
 
 All notable changes to NOX are documented here.
 
+## [1.0.3] — 2026-04-15
+
+### Engine
+- **Fixed:** Recursive Avalanche Engine — identifiers extracted from paste content (`paste["patterns"]`) were not being harvested as pivot seeds. Bare emails and other identifiers found in IntelX paste bodies that lacked a `:password` separator were silently dropped from the pivot queue. All `scrape_res["pastes"]` pattern matches are now fed into `_extract_ids_from_text` and reinjected consistently with `credentials`, `telegram`, and `dork_misconfigs`.
+
 ## [1.0.2] — 2026-04-14
 
 ### Sources

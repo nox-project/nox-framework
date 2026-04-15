@@ -362,6 +362,13 @@ class AvalancheScanner:
             for val, vqtype in _extract_ids_from_text(raw, exclude=asset):
                 if vqtype in _PIVOT_TYPES:
                     new_ids.append((val, vqtype, "scrape", ref))
+        for paste in (scrape_res or {}).get("pastes", []):
+            ref = f"paste:{paste.get('id', paste.get('site', 'paste'))}"
+            for matches in (paste.get("patterns") or {}).values():
+                for m in (matches or []):
+                    for val, vqtype in _extract_ids_from_text(str(m), exclude=asset):
+                        if vqtype in _PIVOT_TYPES:
+                            new_ids.append((val, vqtype, "scrape", ref))
         for tg in (scrape_res or {}).get("telegram", []):
             ref = f"t.me/{tg.get('channel','')}"
             for val, vqtype in _extract_ids_from_text(tg.get("text", ""), exclude=asset):

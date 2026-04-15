@@ -11,7 +11,7 @@
 
 **Cyber Threat Intelligence Framework**
 
-[![Status](https://img.shields.io/badge/Status-v1.0.2-success)](https://github.com/nox-project/nox-framework/releases/tag/v1.0.2)
+[![Status](https://img.shields.io/badge/Status-v1.0.3-success)](https://github.com/nox-project/nox-framework/releases/tag/v1.0.3)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.txt)
 [![Kali Linux](https://img.shields.io/badge/Kali%20Linux-Ready-557C94?logo=kalilinux&logoColor=white)](https://www.kali.org/)

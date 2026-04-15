@@ -150,7 +150,7 @@ except Exception:
             VERSION = _sp2.check_output(["dpkg-query", "-W", "-f=${Version}", "nox-cli"], stderr=_sp2.DEVNULL).decode().strip() or VERSION
         except Exception:
             pass
-BUILD_DATE = "2026-04-14"
+BUILD_DATE = "2026-04-15"
 
 # ── Smart Path Layout ──────────────────────────────────────────────────
 HOME_NOX    = Path.home() / ".nox"
