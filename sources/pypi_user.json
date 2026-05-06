@@ -1,14 +1,16 @@
 {
     "name": "pypi_user",
     "category": "social",
-    "endpoint": "https://pypi.org/pypi/{target}/json",
-    "method": "GET",
+    "endpoint": "https://pypi.org/pypi",
+    "method": "POST",
     "requires_auth": false,
-    "selectors": {
-        "info": "$.info"
-    },
+    "selectors": {},
     "rate_limit": 1.0,
-    "headers": {},
+    "headers": {
+        "Content-Type": "text/xml"
+    },
+    "raw_payload": "<?xml version='1.0'?><methodCall><methodName>user_packages</methodName><params><param><value>{target}</value></param></params></methodCall>",
+    "regex_pattern": "<string>Owner</string></value>\\s*<value><string>([^<]+)</string>",
     "api_key_slots": [],
     "input_type": "username",
     "output_type": [
@@ -20,7 +22,7 @@
     ],
     "health_check_url": "https://pypi.org",
     "expected_status": 200,
-    "reliability_score": 5,
+    "reliability_score": 4,
     "backup_endpoints": [],
-    "confidence": 1.0
+    "confidence": 0.85
 }

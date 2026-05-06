@@ -53,6 +53,8 @@ class SourceConfig(BaseModel):
     rate_limit:       float                    = 1.0
     headers:          Dict[str, str]           = Field(default_factory=dict)
     payload_template: Optional[Dict[str, Any]] = None
+    raw_payload:      Optional[str]            = None
+    regex_pattern:    Optional[str]            = None
     api_key_slots:    List[str]                = Field(default_factory=list)
 
     # ── Typing & pivoting ───────────────────────────────────────────────────
@@ -121,6 +123,8 @@ def _mk(
     rate_limit: float = 1.0,
     headers: Optional[Dict[str, str]] = None,
     payload_template: Optional[Dict[str, Any]] = None,
+    raw_payload: Optional[str] = None,
+    regex_pattern: Optional[str] = None,
     api_key_slots: Optional[List[str]] = None,
     input_type: InputType = "any",
     output_type: Optional[List[str]] = None,
@@ -146,6 +150,8 @@ def _mk(
         rate_limit=rate_limit,
         headers=headers or {},
         payload_template=payload_template,
+        raw_payload=raw_payload,
+        regex_pattern=regex_pattern,
         api_key_slots=api_key_slots or [],
         input_type=input_type,
         output_type=output_type or [],
@@ -416,11 +422,15 @@ FREE_PUBLIC_SOURCES: List[SourceConfig] = [
           health_check_url="https://ipvigilante.com", reliability_score=3, is_volatile=True),
 
     _base("pypi_user", "social",
-          "https://pypi.org/pypi/{target}/json", "GET",
-          {"info": "$.info"},
+          "https://pypi.org/pypi", "POST",
+          {},
+          headers={"Content-Type": "text/xml"},
           input_type="username", output_type=["username"],
+          normalization_map={},
+          regex_pattern=r"<string>Owner</string></value>\s*<value><string>([^<]+)</string>",
           tags=["passive"],
-          health_check_url="https://pypi.org", reliability_score=5),
+          health_check_url="https://pypi.org", reliability_score=4,
+          raw_payload="<?xml version='1.0'?><methodCall><methodName>user_packages</methodName><params><param><value>{target}</value></param></params></methodCall>"),
 
     _base("npm_user", "social",
           "https://registry.npmjs.org/-/v1/search?text=maintainer:{target}", "GET",

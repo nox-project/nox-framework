@@ -2,6 +2,17 @@
 
 All notable changes to NOX are documented here.
 
+## [1.0.5] — 2026-05-06
+
+### Sources
+- **Fixed:** `pypi_user` — endpoint was querying the PyPI package API (`/pypi/{target}/json`) instead of user profiles, returning package metadata for any username that matched a package name and 404 for all others. Source now uses the PyPI XML-RPC `user_packages` method, returning the actual list of packages owned by the target username.
+
+### Engine
+- **Fixed:** `Detect.qtype` — dotted-quad strings with out-of-range octets (e.g. `255.255.255.256`) were classified as `phone` instead of `username`. Invalid IPs now fall through to `username`.
+- **Fixed:** `Record.dedup_key` — records with no identity fields (email, username, password) from different sources all produced the same SHA-256 hash, causing all but the first to be silently dropped from the DB. Source name is now included in the key when identity fields are absent.
+- **Added:** `raw_payload` support in `NoxSourceProvider` — POST sources can now send raw string bodies (e.g. XML-RPC) in addition to JSON and form-encoded payloads.
+- **Fixed:** `FileSystemProvider._by_regex` — regex-extracted values that are not email addresses (e.g. package names, usernames) are now correctly placed in the `username` field instead of `email`.
+
 ## [1.0.4] — 2026-04-22
 
 ### Engine

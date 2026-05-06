@@ -150,7 +150,7 @@ except Exception:
             VERSION = _sp2.check_output(["dpkg-query", "-W", "-f=${Version}", "nox-cli"], stderr=_sp2.DEVNULL).decode().strip() or VERSION
         except Exception:
             pass
-BUILD_DATE = "2026-04-16"
+BUILD_DATE = "2026-05-06"
 
 # ── Smart Path Layout ──────────────────────────────────────────────────
 HOME_NOX    = Path.home() / ".nox"
@@ -618,9 +618,13 @@ class Record:
         return d
 
     def dedup_key(self) -> str:
-        """SHA-256 of normalised email:password for cross-source deduplication."""
+        """SHA-256 of normalised email:password for cross-source deduplication.
+        When identity fields are absent, source is included to prevent enrichment
+        records from different sources colliding into a single DB entry."""
         em = (self.email or self.username or "").lower().strip()
         pw = (self.password or self.password_hash or "").strip()
+        if not em and not pw:
+            return hashlib.sha256(f"{self.source}:{em}:{pw}".encode()).hexdigest()
         return hashlib.sha256(f"{em}:{pw}".encode()).hexdigest()
 
     def get_fingerprint(self) -> str:
@@ -1738,7 +1742,7 @@ class AsyncSource(ABC):
                 _syslog.debug("API_FAIL source=%s url=%s error=%s", self.name, url[:80], exc)
         return 0, "", b""
 
-    async def _post(self, session: "aiohttp.ClientSession", url: str, json_data: Dict = None, data: Dict = None, headers: Dict = None, timeout: int = None) -> Tuple[int, str, bytes]:
+    async def _post(self, session: "aiohttp.ClientSession", url: str, json_data: Dict = None, data: Dict = None, headers: Dict = None, timeout: int = None, raw_body: str = None) -> Tuple[int, str, bytes]:
         """Perform a POST with jitter and retry logic."""
         await _jitter(self._config)
         to   = aiohttp_mod.ClientTimeout(total=timeout or self._config.timeout) if aiohttp_mod else None
@@ -1746,7 +1750,18 @@ class AsyncSource(ABC):
         for attempt in range(Cfg.RETRIES):
             try:
                 async with self._sem:
-                    if json_data is not None:
+                    if raw_body is not None:
+                        async with session.post(url, data=raw_body.encode(), headers=hdrs, timeout=to, ssl=_SSL_CTX) as resp:
+                            if resp.status == 429:
+                                retry_after = _parse_retry_after(resp.headers.get("Retry-After", ""), Cfg.RETRY_DELAY * (attempt + 2))
+                                _syslog.info("RATE_LIMIT source=%s url=%s retry_after=%ds", self.name, url[:80], retry_after)
+                                await asyncio.sleep(min(retry_after, 30))
+                                continue
+                            body = await resp.read()
+                            if resp.status >= 400:
+                                _syslog.warning("API_ERROR source=%s status=%d url=%s", self.name, resp.status, url[:80])
+                            return resp.status, await resp.text(errors="replace"), body
+                    elif json_data is not None:
                         hdrs["Content-Type"] = "application/json"
                         async with session.post(url, json=json_data, headers=hdrs, timeout=to, ssl=_SSL_CTX) as resp:
                             if resp.status == 429:
@@ -1840,6 +1855,7 @@ class Detect:
         q = q.strip()
         if re.match(r"^[\w.+-]+@[\w-]+\.[\w.]+$", q):                                                    return "email"
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", q) and all(0 <= int(o) <= 255 for o in q.split(".")): return "ip"
+        if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", q):                                                    return "username"
         if re.match(r"^(\+?\d{1,3}[\s.-]?)?\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}$", q):             return "phone"
         if re.match(r"^[a-fA-F0-9]{32,128}$", q):                                                        return "hash"
         if re.match(r"^\$2[aby]?\$", q) or re.match(r"^\$argon2", q) or re.match(r"^\$[156]\$", q):      return "hash"
@@ -6274,8 +6290,12 @@ class FileSystemProvider(AsyncSource):
         records = []
         for m in re.finditer(pattern, text):
             groups = m.groups()
+            val = groups[0] if len(groups) > 0 else ""
+            # Route to username if the value is not an email address
+            is_email = "@" in val
             records.append(self._rec(
-                email    = groups[0] if len(groups) > 0 else "",
+                email    = val if is_email else "",
+                username = val if not is_email else "",
                 password = groups[1] if len(groups) > 1 else "",
                 breach_name = self.name,
                 data_types  = [self.name, "Credentials"],
@@ -6406,9 +6426,14 @@ class NoxSourceProvider(FileSystemProvider):
         payload = _sub(d.get("payload") or {})
 
         if method == "POST":
-            status, text, _ = await self._post(session, url,
-                                                json_data=payload or None,
-                                                headers=hdrs)
+            if isinstance(payload, str):
+                status, text, _ = await self._post(session, url,
+                                                    raw_body=payload,
+                                                    headers=hdrs)
+            else:
+                status, text, _ = await self._post(session, url,
+                                                    json_data=payload or None,
+                                                    headers=hdrs)
         else:
             status, text, _ = await self._get(session, url, headers=hdrs)
 
@@ -6575,8 +6600,8 @@ class SourceOrchestrator:
                     "output_type":           raw.get("output_type", []),
                     "pivot_types":           raw.get("pivot_types", []),
                     "confidence":            raw.get("confidence", 0.5),
-                    # payload_template → payload for POST sources
-                    "payload":               raw.get("payload_template") or raw.get("payload") or {},
+                    # payload_template → payload for POST sources; raw_payload takes precedence
+                    "payload":               raw.get("raw_payload") or raw.get("payload_template") or raw.get("payload") or {},
                     # Pass resolved slot keys so FileSystemProvider can use them
                     "_slot_keys":            slot_keys,
                     # Two-phase poll support
